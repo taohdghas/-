@@ -1,6 +1,7 @@
 #include <Novice.h>
+#include <math.h>
 
-const char kWindowTitle[] = "チーム制作";
+const char kWindowTitle[] = "爽快‼はじけ玉‼";
 
 //ベクトル
 struct Vector2 {
@@ -20,7 +21,7 @@ struct Player {
 	float radius;             //大きさ
 	unsigned int color;       //色
 	float angle;              //照準方向
-	int isthere;              //生存フラグ
+	int isAlive;              //生存フラグ
 	int stock;                //残機
 };
 
@@ -30,7 +31,8 @@ struct Ball {
 	Vector2 velocity;         //速度
 	float radius;             //大きさ
 	unsigned int color;       //色
-	int isshot;               //発射フラグ
+	float speed;              //最高速度
+	int isShot;               //発射フラグ
 	int HP;                   //反射に耐えられる回数
 };
 
@@ -38,14 +40,20 @@ struct Ball {
 struct Enemy {
 	Vector2 pos;              //場所
 	float radius;             //大きさ
-	int isthere;              //生存フラグ
+	int isAlive;              //生存フラグ
 	int changeblock;          //ブロックの切り替えフラグ
+	Vector2 velocity;         //あげる速度
 };
 
 //ステージの構造体
 struct Stage {
 	int clear;                //クリアしたか
 
+};
+//ステージクリア演出の構造体
+struct StageClear {
+	Vector2 pos;
+	int flag;
 };
 
 // Windowsアプリでのエントリーポイント(main関数)
@@ -71,7 +79,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//ステージ3
 	/*int stage3[][]={}*/
 
-	
+
 	//プレイヤー
 	Player player{
 		{0,0},              //場所
@@ -88,6 +96,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0,0},                            //速度 仮で0
 		10,                               //大きさ 仮で10
 		0xffffffff,                       //色 仮で0
+		30.0f,                            //最高速度
 		false,                            //発射フラグ
 		3,                                //HP 仮で3
 	};
@@ -120,7 +129,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		0,          //生存フラグ
 		0,          //ブロックの切り替えフラグ
 	};
-	
+
 	Stage stage1{
 		false,
 	};
@@ -130,22 +139,39 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 
 	Stage stage3{
-	    false,
+		false,
+	};
+
+	StageClear stageclear1{
+		{0,0},//仮
+		false,
+	};
+
+	StageClear stageclear2{
+		{0,0},//仮
+		false,
+	};
+
+	StageClear stageclear3{
+		{0,0},//仮
+		false,
 	};
 
 	// 画面変化
 	enum screen {
 		TITLE,  //タイトル
-		//SEKECT ステージセレクト
-		PLAY,   //ゲーム画面
+		//SELECT ステージセレクト
+		STAGE1,   //ステージ1
+		STAGE2,
+		STAGE3,
 		CLEAR   //クリア画面
 	};
 
-	screen screenscene = PLAY; //表示されるシーン
+	screen screenscene = STAGE1; //表示されるシーン
 
 	// キー入力結果を受け取る箱
-	char keys[256] = {0};
-	char preKeys[256] = {0};
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -159,8 +185,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓更新処理ここから
 		///
+		/// 
 
-		switch(screenscene){
+		//玉と敵の当たり判定(仮で円同士の当たり判定でいきます)
+		/*
+		 auto dx = ball.pos.x - EnemyUP.pos.x;
+		 auto dy = ball.pos.y - EnemyUP.pos.y;
+		 auto distance = dx * dx + dy * dy;
+
+
+		*/
+
+
+		switch (screenscene) {
 		case TITLE:
 			//spaceキー押されたらセレクト画面に移行(未定)
 			/*if (keys[DIK_SPACE]) {
@@ -170,48 +207,105 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//spaceキー押されたらステージ画面へ移行
 			if (keys[DIK_SPACE]) {
-				screenscene = PLAY;
+				screenscene = STAGE1;
 			}
 
 			break;
-		//case SELECT:
-			//break;
-		case PLAY:
+			//case SELECT:
+				//break;
+		case STAGE1:
 
 			//弾が発射できる状態であればプレイヤーを操作できる
-			if (!ball.isshot) {
-				//玉の発射方向
-				if(keys[DIK_LEFTARROW] && !preKeys[DIK_LEFTARROW]){
+			if (!ball.isShot) {
+				/*玉の発射方向*/
+
+				//左矢印キーが押されたら左に45度傾く
+				if (keys[DIK_LEFTARROW] && !preKeys[DIK_LEFTARROW]) {
+					player.angle += 45.0f;
 				}
-				//玉の発射処理
-				//if (keys[DIK_SPACE] && ball.isshot) {}
+				//右矢印キーが押されたら右に45度傾く
+				if (keys[DIK_RIGHTARROW] && !preKeys[DIK_RIGHTARROW]) {
+					player.angle -= 45.0f;
+				}
+
+				//限界角度以上傾かないようにする
+				if (player.angle > 45.0f) {
+					player.angle = 45.0f;
+				}
+				if (player.angle < -45.0f) {
+					player.angle < -45.0f;
+				}
+
+				/*玉の発射処理*/
+
+				//Spaceキーが押されたら弾を発射する
+				if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+
+					//弾の位置をプレイヤーの頭上に設定
+					ball.pos = { player.pos.x,player.pos.y + 10 };
+
+					//弾の速度を照準方向から設定
+					//方向はdegreeからradianに変換する
+					ball.velocity = { cosf(player.angle * (3.14f / 180.0f)) * ball.speed
+									 ,sinf(player.angle * (3.14f / 180.0f)) * ball.speed };
+
+					//発射フラグをtrueにする
+					//これで弾が消えるまでプレイヤーを操作できなくなる
+					ball.isShot = true;
+
+				}
 
 			}
+
+			//全ての敵の生存フラグがfalseならステージクリア
+				/*if(enemyUP.isAlive && enemyDOWN.isAlive && enemyLEFT.isAlive){
+				stage1.clear = true;
+				stageclear1.flag = true;
+				}
+			*/
+
+			break;
+		case STAGE2:
+			//全ての敵の生存フラグがfalseならステージクリア
+		    /*if(enemyUP.isAlive){
+		    stage2.clear = true;
+		    stageclear2.flag = true;
+		    }
+		*/
+			break;
+		case STAGE3:
+			//全ての敵の生存フラグがfalseならステージクリア
+			/*if(enemyUP.isAlive && enemyDOWN.isAlive && enemyLEFT.isAlive){
+			stage3.clear = true;
+			stageclear3.flag = true;
+			}
+		*/
 
 			break;
 		case CLEAR:
+
 			break;
 		}
-		    ///
-		  	/// ↑更新処理ここまで
-			///
+		///
+		/// ↑更新処理ここまで
+		///
 
-			///
-			/// ↓描画処理ここから
-			///
+		///
+		/// ↓描画処理ここから
+		///
 		switch (screenscene) {
 		case TITLE:
 			break;
-		case PLAY:
+		case STAGE1:
 			break;
 		case CLEAR:
 			break;
 		}
-			///
-			/// ↑描画処理ここまで
-			///
+		///
+		/// ↑描画処理ここまで
+		///
 
-		// フレームの終了
+	// フレームの終了
 		Novice::EndFrame();
 
 		// ESCキーが押されたらループを抜ける

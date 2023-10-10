@@ -305,7 +305,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					}
 					else {
 						ball.velocity.x *= -1;
-							ball.velocity.y *= -1;
+						ball.velocity.y *= -1;
 					}
 				}
 				if (MapNum == naname && ballMapNum == MapNum) {

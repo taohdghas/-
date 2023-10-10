@@ -89,26 +89,27 @@ struct StageClear {
 	int flag;
 };
 
-struct Map_cip {
-	float posX[100];
-	float posY[100];
-	float w;
-	float h;
-};
-
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 720);
 
-	int map[100][100];
+	const int Map_W = 40;
+	const int Map_H = 23;
+	int Map_radius = 32;
+	int MapNum = 0;
+	int map[Map_H][Map_W];
 	FILE* fp;
 	fp = fopen("test.txt", "r");
+	for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+	enum MapNumber {
+		null,
+		kabe,
+		nanane
 
-	for (int i = 0; i < 23; i++)for (int j = 0; j < 40; j++)fscanf(fp, "%d", &map[i][j]);
-
-	Map_cip block = { {0},{0},32,32 };
+	};
+	
 
 	/*int blockHandle[];
 	blockHandle[0] = Novice::LoadTexture("./block1.png");
@@ -207,7 +208,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 
 	StageClear stageclear3{
-		{0,0},//仮
+		{0,-0},//仮
 		false,
 	};
 
@@ -240,20 +241,58 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
-		//玉と敵の当たり判定(仮で円同士の当たり判定でいきます)
+		//玉と敵の当たり判定
 		/*
-		 auto = Lengh( ball.pos.x - EnemyUP.pos.x, ball.pos.y - EnemyUP.pos.y);
+		 auto = Lengh( ball.pos.x - EnemyUP1.pos.x, ball.pos.y - EnemyUP1.pos.y);
 		 if(auto <= 00){
-		    enemyhp -1;
-			player.velosity.x = enemy.velosity.x;
-			player.velosity.y = enemy.velosity.y;
+		 　 ball.isshot = false;
+		    enemyUP1.isAlive = false;
+			//矢印の方向へ行く
+			ball.pos.y -= ball.velosity.y
 		    }
 
+		 auto = Lengh( ball.pos.x - EnemyDOWN1.pos.x, ball.pos.y - EnemyDOWN1.pos.y);
+		 if(auto <= 00){
+	        ball.isshot = false;
+		    enemyDOWN1.isAlive = false;
+			//矢印の方向へ行く
+			ball.pos.y += ball.velosity.y
+		    }
+
+		auto = Lengh( ball.pos.x - EnemyLEFT1.pos.x, ball.pos.y - EnemyLEFT1.pos.y);
+		 if(auto <= 00){
+		    ball.isshot = false;
+			enemyLEFT1.isAlive = false;
+			//矢印の方向へ行く
+			ball.pos.x += ball.velosity.x
+			}
+
+         auto = Lengh( ball.pos.x - EnemyLIGHT1.pos.x, ball.pos.y - EnemyLIGHT1.pos.y);
+		 if(auto <= 00){
+		    ball.isshot = false;
+		    enemyLIGHT1.isAlive = false;
+			//矢印の方向へ行く
+			ball.pos.x -= ball.velosity.x; 
+		    }
 		*/
 
 		//マップチップの当たり判定
 		/*
-		
+		for(int y = 0;y < Map_h;y++){
+		for(int x = 0;x < Map_W){
+
+		}
+		}
+		ball.MapNum = (ball.pos.y / radius * Map.W) + (ball.pos.x / rasius)
+		if(MapNum == kabe && ball.MapNum == MapNum){
+		   ball.velosity.x = enemy.velosity.x;
+			ball.velosity.y = enemy.velosity.y;
+		}
+		if(MapNum == nanamekabe && ball.MapNum == MapNum){
+		   ball.velosity.x = enemy.velosity.x;
+			ball.velosity.y = enemy.velosity.y;
+		}
+
 		*/
 
 
@@ -284,12 +323,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			enemyLEFT1.pos.y = 100;
 
 			//マップチップ(プロト版)
-			for (int i = 0; i < 23; i++) {
-				for (int j = 0; j < 40; j++) {
-					block.posX[j] = block.w * j;
-					block.posY[i] = block.h * i;
-				}
-			}
 
 			//弾が発射できる状態であればプレイヤーを操作できる
 			if (!ball.isShot) {
@@ -340,17 +373,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				ball.pos.y += ball.velocity.y;
 			}
 
-			/*もし敵に当たったら発射フラグをfalseに
-
 			//もし〇回玉が反射したら発射フラグをfalseに
-
 
 			//全ての敵の生存フラグがfalseならステージクリア
 				/*if(enemyUP.isAlive && enemyDOWN.isAlive && enemyLEFT.isAlive){
-				stage1.clear = true;
-				stageclear1.flag = true;
+				stage1clear.flag = true;
 				}
-			*/
+
+				if(stage1clear.flag){
+				//ステージクリアの文字が出る
+				}
+				*/
 
 			break;
 		case STAGE2:
@@ -395,16 +428,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-			/*もし敵に当たったら発射フラグをfalseに
-
 			//もし〇回玉が反射したら発射フラグをfalseに
 
 
 			//全ての敵の生存フラグがfalseならステージクリア
 		    /*if(enemyUP.isAlive){
-		    stage2.clear = true;
 		    stageclear2.flag = true;
 		    }
+			if(stage2clear.flag){
+				//ステージクリアの文字が出る
+			}
 		*/
 			break;
 		case STAGE3:
@@ -449,18 +482,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-			/*もし敵に当たったら発射フラグをfalseに
-			if(auto <= 00){
-			ball.isshot = false;
-			}
-
 			//もし〇回玉が反射したら発射フラグをfalseに
+
 
 			//全ての敵の生存フラグがfalseならステージクリア
 			/*if(enemyUP.isAlive && enemyDOWN.isAlive && enemyLEFT.isAlive){
-			stage3.clear = true;
 			stageclear3.flag = true;
 			}
+			if(stage3clear.flag){
+				//ステージクリアの文字が出る
+				}
 		*/
 
 			break;
@@ -484,11 +515,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (int i = 0; i < 23; i++) {
 				for (int j = 0; j < 40; j++) {
 					if (map[i][j] == 1) {
-						Novice::DrawBox(int(block.posX[j]), int(block.posY[i]), int(block.w), int(block.h), 0.0f, RED, kFillModeWireFrame);
+						Novice::DrawBox(j * Map_radius,i * Map_radius, Map_radius, Map_radius, 0.0f, RED, kFillModeWireFrame);
+					}
+					if (map[i][j] == 2) {
+						Novice::DrawBox(j * Map_radius, i * Map_radius, Map_radius, Map_radius, 0.0f, BLUE, kFillModeWireFrame);
 					}
 				}
 			}
-			/*マップ表示 真
+			/*
 			for(int y = 0;y < Map_H;y++){
 			for(int x = 0;x < Map_W;x++){
 			PrintMap(Map.x,Map.y,rad,TileNum.W,TileNum.H,gazou,color);

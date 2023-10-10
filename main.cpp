@@ -15,7 +15,7 @@ float Normalize(float aPos, float length) //正規化
 		return aPos;
 	}
 }
-float Length(float x, float y) 
+float Length(float x, float y)
 {
 	return sqrtf(x * x + y * y);
 }
@@ -62,7 +62,7 @@ struct Ball {
 };
 
 //敵の構造体
-struct Enemy{
+struct Enemy {
 	Vector2 pos;              //場所
 	float radius;             //大きさ
 	int isAlive;              //生存フラグ
@@ -113,10 +113,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	enum MapNumber {
 		null,
 		kabe,
-		nanane
+		naname
 
 	};
-	
+
 
 	/*int blockHandle[];
 	blockHandle[0] = Novice::LoadTexture("./block1.png");
@@ -139,7 +139,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//プレイヤー
 	Player player{
 		{0,0},              //場所
-	    25 ,                //大きさ
+		25 ,                //大きさ
 		0xffffffff,         //色
 		90.0f,              //照準方向
 		true,               //生存フラグ
@@ -156,6 +156,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		false,                            //発射フラグ
 		3,                                //HP 仮で3
 	};
+	int ballMapNum = 0;
 
 	//敵(1ステージに同じ方向が複数あるステージがあるかもなので数字を付けて差別化)
 	Enemy enemyUP1{
@@ -259,70 +260,71 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		 auto = Lengh( ball.pos.x - EnemyUP1.pos.x, ball.pos.y - EnemyUP1.pos.y);
 		 if(auto <= 00){
 		 　 ball.isshot = false;
-		    enemyUP1.isAlive = false;
+			enemyUP1.isAlive = false;
 			//矢印の方向へ行く
-			ball.pos.y -= ball.velosity.y
-		    }
+			ball.pos.y -= ball.velocity.y
+			}
 
 		 auto = Lengh( ball.pos.x - EnemyDOWN1.pos.x, ball.pos.y - EnemyDOWN1.pos.y);
 		 if(auto <= 00){
-	        ball.isshot = false;
-		    enemyDOWN1.isAlive = false;
+			ball.isshot = false;
+			enemyDOWN1.isAlive = false;
 			//矢印の方向へ行く
-			ball.pos.y += ball.velosity.y
-		    }
+			ball.pos.y += ball.velocity.y
+			}
 
 		auto = Lengh( ball.pos.x - EnemyLEFT1.pos.x, ball.pos.y - EnemyLEFT1.pos.y);
 		 if(auto <= 00){
-		    ball.isshot = false;
+			ball.isshot = false;
 			enemyLEFT1.isAlive = false;
 			//矢印の方向へ行く
-			ball.pos.x += ball.velosity.x
+			ball.pos.x += ball.velocity.x
 			}
 
-         auto = Lengh( ball.pos.x - EnemyLIGHT1.pos.x, ball.pos.y - EnemyLIGHT1.pos.y);
+		 auto = Lengh( ball.pos.x - EnemyLIGHT1.pos.x, ball.pos.y - EnemyLIGHT1.pos.y);
 		 if(auto <= 00){
-		    ball.isshot = false;
-		    enemyLIGHT1.isAlive = false;
+			ball.isshot = false;
+			enemyLIGHT1.isAlive = false;
 			//矢印の方向へ行く
-			ball.pos.x -= ball.velosity.x; 
-		    }
+			ball.pos.x -= ball.velocity.x;
+			}
 		*/
 
 		//マップチップの当たり判定
-		/*
-		for(int y = 0;y < Map_h;y++){
-		for(int x = 0;x < Map_W){
-		MapNum = y * Map_W + x;
-		ball.MapNum = (ball.pos.y / radius * Map.W) + (ball.pos.x / rasius)
-		if(MapNum == kabe && ball.MapNum == MapNum){
-		if(ball.velosity.x == 0){
-		ball.velosity.y *= -1;
-		}
-		else if(ball.velosity.y == 0{
-		ball.velosity.x *= -1;
-		}
-		else{
-		
-		}
-		}
-		if(MapNum == naname && ball.MapNum == MapNum){
-          if(ball.velosity.x != 0 && ball.velocity.y != 0){
-		   ball.velosity.x *= -1;
-		  ball.velosity.y *= -1;
-		  }
-		  elseif(ball.velocity.x == 0){
-		  ball.velocity.y *= -1
-		  }
-		  else if (ball.velocty.y == 0){
-		  ball.velosity.x *= -1;
-		  }
-		}
-		}
-		}
-		
 
-		*/
+		for (int y = 0; y < Map_H; y++) {
+			for (int x = 0; x < Map_W;x++) {
+				MapNum = y * Map_W + x;
+				ballMapNum = (ball.pos.y / ball.radius * Map_W) + (ball.pos.x / ball.radius);
+				if (MapNum == kabe && ballMapNum == MapNum) {
+					if (ball.velocity.x == 0) {
+						ball.velocity.y *= -1;
+					}
+					else if (ball.velocity.y == 0){
+						ball.velocity.x *= -1;
+					}
+					else {
+						ball.velocity.x *= -1;
+							ball.velocity.y *= -1;
+					}
+				}
+				if (MapNum == naname && ballMapNum == MapNum) {
+					if (ball.velocity.x == 0) {
+						ball.velocity.y *= -1;
+					}
+					else if (ball.velocity.y == 0) {
+						ball.velocity.x *= -1;
+					}
+					else {
+						ball.velocity.x *= -1;
+						ball.velocity.y *= -1;
+					}
+				}
+			}
+		}
+
+
+
 
 
 		switch (screenscene) {
@@ -406,17 +408,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				ball.pos.y -= ball.velocity.y;
 			}
 
-            /*
+			/*
 			if (もし玉が反射可能回数に達したら) {
 			//発射フラグをfalseに
 			//盤面と反射可能回数をリセット
 			ball.isshot = false;
-		    ball.HP = 5;
+			ball.HP = 5;
 			enemyUP1.isAlive = true;
 			enemyDOWN1.isAlive = true;
 			enemyLEFT1.isAlive = true;
 			}
-	        */
+			*/
 
 			//全ての敵の生存フラグがfalseならステージクリア
 				/*if(enemyUP.isAlive && enemyDOWN.isAlive && enemyLEFT.isAlive){
@@ -490,9 +492,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			*/
 
 			//全ての敵の生存フラグがfalseならステージクリア
-		    /*if(enemyUP.isAlive){
-		    stageclear2.flag = true;
-		    }
+			/*if(enemyUP.isAlive){
+			stageclear2.flag = true;
+			}
 			if(stage2clear.flag){
 				//ステージクリアの文字が出る
 			}
@@ -550,14 +552,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 			}
-		/*
-		if (もし玉が反射可能回数に達したら) {
-		//発射フラグをfalseに
-		//盤面と反射可能回数をリセット
-		ball.isshot = false;
-		ball.HP = 5;
-		}
-		*/
+			/*
+			if (もし玉が反射可能回数に達したら) {
+			//発射フラグをfalseに
+			//盤面と反射可能回数をリセット
+			ball.isshot = false;
+			ball.HP = 5;
+			}
+			*/
 
 			//全ての敵の生存フラグがfalseならステージクリア
 			/*if(enemyUP.isAlive && enemyDOWN.isAlive && enemyLEFT.isAlive){
@@ -599,7 +601,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (int i = 0; i < 23; i++) {
 				for (int j = 0; j < 40; j++) {
 					if (map[i][j] == 1) {
-						Novice::DrawBox(j * Map_radius,i * Map_radius, Map_radius, Map_radius, 0.0f, RED, kFillModeWireFrame);
+						Novice::DrawBox(j * Map_radius, i * Map_radius, Map_radius, Map_radius, 0.0f, RED, kFillModeWireFrame);
 					}
 					if (map[i][j] == 2) {
 						Novice::DrawBox(j * Map_radius, i * Map_radius, Map_radius, Map_radius, 0.0f, BLUE, kFillModeWireFrame);
@@ -612,32 +614,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			PrintMap(Map.x,Map.y,rad,TileNum.W,TileNum.H,gazou,color);
 			}
 			}
-			
+
 			*/
 			//プレイヤー　プロトタイプにつき円で。
 			if (player.isAlive) {
 				Novice::DrawEllipse(int(player.pos.x), int(player.pos.y), int(player.radius),
-					int(player.radius),0.0f, WHITE, kFillModeSolid);
+					int(player.radius), 0.0f, WHITE, kFillModeSolid);
 			}
 
 			//玉
 			if (ball.isShot) {
-				Novice::DrawEllipse(int(ball.pos.x), int(ball.pos.y),int(ball.radius), 
+				Novice::DrawEllipse(int(ball.pos.x), int(ball.pos.y), int(ball.radius),
 					int(ball.radius), 0.0f, RED, kFillModeSolid);
 			}
 
 			///敵///
-		    //UP
+			//UP
 			Novice::DrawEllipse(int(enemyUP1.pos.x), int(enemyUP1.pos.y), int(enemyUP1.radius),
-				int(enemyUP1.radius),0.0f, RED, kFillModeSolid);
+				int(enemyUP1.radius), 0.0f, RED, kFillModeSolid);
 
 			//DOWN
-			Novice::DrawEllipse(int(enemyDOWN1.pos.x), int(enemyDOWN1.pos.y), int(enemyDOWN1.radius), 
-				int(enemyDOWN1.radius),0.0f, BLUE, kFillModeSolid);
+			Novice::DrawEllipse(int(enemyDOWN1.pos.x), int(enemyDOWN1.pos.y), int(enemyDOWN1.radius),
+				int(enemyDOWN1.radius), 0.0f, BLUE, kFillModeSolid);
 
 			//LEFT
 			Novice::DrawEllipse(int(enemyLEFT1.pos.x), int(enemyLEFT1.pos.y), int(enemyLEFT1.radius),
-				int(enemyLEFT1.radius),0.0f, GREEN, kFillModeSolid);
+				int(enemyLEFT1.radius), 0.0f, GREEN, kFillModeSolid);
 
 			break;
 		case STAGE2:

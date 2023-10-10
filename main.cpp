@@ -3,6 +3,21 @@
 
 const char kWindowTitle[] = "爽快‼はじけ玉‼";
 
+//関数
+float Normalize(float aPos, float length) //正規化
+{
+	if (length != 0) {
+		return aPos / length;
+	}
+	else {
+		return aPos;
+	}
+}
+
+float Length(float x, float y) 
+{
+	return sqrtf(x * x + y * y);
+}
 //ベクトル
 struct Vector2 {
 	float x;                  //X軸
@@ -37,12 +52,20 @@ struct Ball {
 };
 
 //敵の構造体
-struct Enemy {
+struct Enemy{
 	Vector2 pos;              //場所
 	float radius;             //大きさ
 	int isAlive;              //生存フラグ
 	int changeblock;          //ブロックの切り替えフラグ
 	Vector2 velocity;         //あげる速度
+};
+
+//回転する壁
+struct Block {
+	Vector2 pos;
+	Vector2 Map_Pos;
+	int Map_Num;
+
 };
 
 //ステージの構造体
@@ -101,31 +124,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		3,                                //HP 仮で3
 	};
 
-	//敵
-	Enemy enemyUP{
+	//敵(1ステージに同じ方向が複数あるステージがあるかもなので数字を付けて差別化)
+	Enemy enemyUP1{
+		{0,0},      //場所
+		10,         //大きさ
+		0,          //生存フラグ
+		0,          //ブロックの切り替えフラグ
+	};
+	Enemy enemyUP2{
 		{0,0},      //場所
 		25,         //大きさ
 		0,          //生存フラグ
 		0,          //ブロックの切り替えフラグ
 	};
-
-	Enemy enemyDOWN{
+	//
+	Enemy enemyDOWN1{
 		{0,0},      //場所
-		25,         //大きさ
+		10,         //大きさ
 		0,          //生存フラグ
 		0,          //ブロックの切り替えフラグ
 	};
-
-	Enemy enemyLEFT{
+	//
+	Enemy enemyLEFT1{
 		{0,0},      //場所
-		25,         //大きさ
+		10,         //大きさ
 		0,          //生存フラグ
 		0,          //ブロックの切り替えフラグ
 	};
-
-	Enemy enemyLIGHT{
+	//
+	Enemy enemyLIGHT1{
 		{0,0},      //場所
-		25,         //大きさ
+		10,         //大きさ
 		0,          //生存フラグ
 		0,          //ブロックの切り替えフラグ
 	};
@@ -189,11 +218,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		//玉と敵の当たり判定(仮で円同士の当たり判定でいきます)
 		/*
-		 auto dx = ball.pos.x - EnemyUP.pos.x;
-		 auto dy = ball.pos.y - EnemyUP.pos.y;
-		 auto distance = dx * dx + dy * dy;
+		 auto = Lengh( ball.pos.x - EnemyUP.pos.x, ball.pos.y - EnemyUP.pos.y);
+		 if(auto <= 00){
 
+		 }
 
+		*/
+
+		//マップチップの当たり判定
+		/*
+		
 		*/
 
 
@@ -254,8 +288,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					ball.isShot = true;
 
 				}
-
 			}
+
+			/*もし敵に当たったら発射フラグをfalseに
+
+			//もし〇回玉が反射したら発射フラグをfalseに
+
 
 			//全ての敵の生存フラグがfalseならステージクリア
 				/*if(enemyUP.isAlive && enemyDOWN.isAlive && enemyLEFT.isAlive){
@@ -297,6 +335,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case TITLE:
 			break;
 		case STAGE1:
+			//プレイヤー　プロトタイプにつき円で。
+			if (player.isAlive) {
+				Novice::DrawEllipse(player.pos.x, player.pos.y, player.radius, player.radius,
+					0.0f, WHITE, kFillModeSolid);
+			}
+
+			//玉
+			if (ball.isShot) {
+				Novice::DrawEllipse(ball.pos.x, ball.pos.y,ball.radius, ball.radius, 
+					0.0f, RED, kFillModeSolid);
+			}
+
+			///敵///
+		    //UP
+			Novice::DrawEllipse(enemyUP1.pos.x, enemyUP1.pos.y, enemyUP1.radius, enemyUP1.radius,
+				0.0f, RED, kFillModeSolid);
+
+			//DOWN
+			Novice::DrawEllipse(enemyDOWN1.pos.x, enemyDOWN1.pos.y, enemyDOWN1.radius, 
+				enemyDOWN1.radius,0.0f, BLUE, kFillModeSolid);
+
+			//LEFT
+			Novice::DrawEllipse(enemyLEFT1.pos.x, enemyLEFT1.pos.y, enemyLEFT1.radius, enemyLEFT1.radius,
+				0.0f, GREEN, kFillModeSolid);
+
 			break;
 		case CLEAR:
 			break;

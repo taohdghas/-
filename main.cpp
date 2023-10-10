@@ -89,6 +89,12 @@ struct StageClear {
 	int flag;
 };
 
+//リトライ演出の構造体
+struct RETRY {
+	Vector2 pos;
+	int flag;
+};
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -103,6 +109,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	FILE* fp;
 	fp = fopen("test.txt", "r");
 	for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+	fclose(fp);
 	enum MapNumber {
 		null,
 		kabe,
@@ -208,7 +215,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 
 	StageClear stageclear3{
-		{0,-0},//仮
+		{0,0},//仮
+		false,
+	};
+
+	RETRY retry{
+		{0,0}, //仮
 		false,
 	};
 
@@ -219,7 +231,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE1,   //ステージ1
 		STAGE2,
 		STAGE3,
-		CLEAR   //クリア画面
+		CLEAR,   //クリア画面
+		RETRY    //リトライ画面
 	};
 
 	screen screenscene = STAGE1; //表示されるシーン
@@ -280,18 +293,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/*
 		for(int y = 0;y < Map_h;y++){
 		for(int x = 0;x < Map_W){
-
-		}
-		}
+		MapNum = y * Map_W + x;
 		ball.MapNum = (ball.pos.y / radius * Map.W) + (ball.pos.x / rasius)
 		if(MapNum == kabe && ball.MapNum == MapNum){
-		   ball.velosity.x = enemy.velosity.x;
-			ball.velosity.y = enemy.velosity.y;
+		if(ball.velosity.x == 0){
+		ball.velosity.y *= -1;
 		}
-		if(MapNum == nanamekabe && ball.MapNum == MapNum){
-		   ball.velosity.x = enemy.velosity.x;
-			ball.velosity.y = enemy.velosity.y;
+		else if(ball.velosity.y == 0{
+		ball.velosity.x *= -1;
 		}
+		else{
+		
+		}
+		}
+		if(MapNum == naname && ball.MapNum == MapNum){
+          if(ball.velosity.x != 0 && ball.velocity.y != 0){
+		   ball.velosity.x *= -1;
+		  ball.velosity.y *= -1;
+		  }
+		  elseif(ball.velocity.x == 0){
+		  ball.velocity.y *= -1
+		  }
+		  else if (ball.velocty.y == 0){
+		  ball.velosity.x *= -1;
+		  }
+		}
+		}
+		}
+		
 
 		*/
 
@@ -315,12 +344,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case STAGE1:
 			player.pos.x = 300;
 			player.pos.y = 650;
+			ball.HP = 5; //仮
 			enemyUP1.pos.x = 900;
 			enemyUP1.pos.y = 400;
 			enemyDOWN1.pos.x = 200;
 			enemyDOWN1.pos.y = 100;
 			enemyLEFT1.pos.x = 900;
 			enemyLEFT1.pos.y = 100;
+			enemyUP1.isAlive = true;
+			enemyDOWN1.isAlive = true;
+			enemyLEFT1.isAlive = true;
 
 			//マップチップ(プロト版)
 
@@ -369,11 +402,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//弾が発射されたら移動を開始する
 			if (ball.isShot) {
-				ball.pos.x += ball.velocity.x;
-				ball.pos.y += ball.velocity.y;
+				ball.pos.x -= ball.velocity.x;
+				ball.pos.y -= ball.velocity.y;
 			}
 
-			//もし〇回玉が反射したら発射フラグをfalseに
+            /*
+			if (もし玉が反射可能回数に達したら) {
+			//発射フラグをfalseに
+			//盤面と反射可能回数をリセット
+			ball.isshot = false;
+		    ball.HP = 5;
+			enemyUP1.isAlive = true;
+			enemyDOWN1.isAlive = true;
+			enemyLEFT1.isAlive = true;
+			}
+	        */
 
 			//全ての敵の生存フラグがfalseならステージクリア
 				/*if(enemyUP.isAlive && enemyDOWN.isAlive && enemyLEFT.isAlive){
@@ -385,6 +428,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 				*/
 
+				//もし玉を全て打ち切ってしまったらリトライ
+			/*
+			if(残り玉数が0なら){
+			retry.flag = true;
+			}
+
+			if(retry.flag){
+			//リトライの文字が出る
+			}
+			*/
 			break;
 		case STAGE2:
 			//弾が発射できる状態であればプレイヤーを操作できる
@@ -427,9 +480,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 			}
-
-			//もし〇回玉が反射したら発射フラグをfalseに
-
+			/*
+			if (もし玉が反射可能回数に達したら) {
+			//発射フラグをfalseに
+			//盤面と反射可能回数をリセット
+			ball.issshot = false;
+			ball.HP = 5;
+			}
+			*/
 
 			//全ての敵の生存フラグがfalseならステージクリア
 		    /*if(enemyUP.isAlive){
@@ -438,6 +496,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if(stage2clear.flag){
 				//ステージクリアの文字が出る
 			}
+		*/
+
+		//もし玉を全て打ち切ってしまったらリトライ
+		/*
+		if(残り玉数が0なら){
+		retry.flag = true;
+		}
+
+		if(retry.flag){
+		//リトライの文字が出る
+		}
 		*/
 			break;
 		case STAGE3:
@@ -481,9 +550,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				}
 			}
-
-			//もし〇回玉が反射したら発射フラグをfalseに
-
+		/*
+		if (もし玉が反射可能回数に達したら) {
+		//発射フラグをfalseに
+		//盤面と反射可能回数をリセット
+		ball.isshot = false;
+		ball.HP = 5;
+		}
+		*/
 
 			//全ての敵の生存フラグがfalseならステージクリア
 			/*if(enemyUP.isAlive && enemyDOWN.isAlive && enemyLEFT.isAlive){
@@ -494,6 +568,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 		*/
 
+		//もし玉を全て打ち切ってしまったらリトライ
+		/*
+		if(残り玉数が0なら){
+		retry.flag = true;
+		}
+
+		if(retry.flag){
+		//リトライの文字が出る
+		}
+		*/
 			break;
 		case CLEAR:
 

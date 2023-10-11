@@ -293,14 +293,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//マップチップの当たり判定
 
 		for (int y = 0; y < Map_H; y++) {
-			for (int x = 0; x < Map_W;x++) {
+			for (int x = 0; x < Map_W; x++) {
 				MapNum = y * Map_W + x;
-				ballMapNum = (ball.pos.y / ball.radius * Map_W) + (ball.pos.x / ball.radius);
-				if (MapNum == kabe && ballMapNum == MapNum) {
+				ballMapNum = int(ball.pos.y / ball.radius) * Map_W + int(ball.pos.x / ball.radius);
+				if (map[y][x] == kabe && ballMapNum == MapNum) {
 					if (ball.velocity.x == 0) {
 						ball.velocity.y *= -1;
 					}
-					else if (ball.velocity.y == 0){
+					else if (ball.velocity.y == 0) {
 						ball.velocity.x *= -1;
 					}
 					else {
@@ -308,7 +308,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						ball.velocity.y *= -1;
 					}
 				}
-				if (MapNum == naname && ballMapNum == MapNum) {
+				if (map[y][x] == naname && ballMapNum == MapNum) {
 					if (ball.velocity.x == 0) {
 						ball.velocity.y *= -1;
 					}
@@ -366,11 +366,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				//左矢印キーが押されたら左に45度傾く
 				if (keys[DIK_LEFTARROW] && !preKeys[DIK_LEFTARROW]) {
-					player.angle += 45.0f;
+					player.angle -= 45.0f;
 				}
 				//右矢印キーが押されたら右に45度傾く
 				if (keys[DIK_RIGHTARROW] && !preKeys[DIK_RIGHTARROW]) {
-					player.angle -= 45.0f;
+					player.angle += 45.0f;
 				}
 
 				//限界角度以上傾かないようにする

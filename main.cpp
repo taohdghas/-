@@ -294,8 +294,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		for (int y = 0; y < Map_H; y++) {
 			for (int x = 0; x < Map_W; x++) {
-				MapNum = y * Map_W + x;
-				ballMapNum = int(ball.pos.y / ball.radius) * Map_W + int(ball.pos.x / ball.radius);
+				MapNum = y * (Map_W - 1) + x;
+				ballMapNum = int(ball.pos.y / ball.radius) * (Map_W - 1) + int(ball.pos.x / ball.radius);
 				if (map[y][x] == kabe && ballMapNum == MapNum) {
 					if (ball.velocity.x == 0) {
 						ball.velocity.y *= -1;
@@ -304,8 +304,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						ball.velocity.x *= -1;
 					}
 					else {
-						ball.velocity.x *= -1;
+						/*if(ballMapNum - 1 == ballMapNumの1フレ前 || ballMapNum + 1 == ballMapNumの1フレ前){
 						ball.velocity.y *= -1;
+						}
+						else if (ballMapNum - 1 - Map_W == ballMapNumの1フレ前 || ballMapNum - 1 + Map_W == ballMapNumの1フレ前){
+						ball.velocity.x *= -1;
+						}
+						ball.velocity.x *= -1;
+						ball.velocity.y *= -1;*/
 					}
 				}
 				if (map[y][x] == naname && ballMapNum == MapNum) {
@@ -406,6 +412,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (ball.isShot) {
 				ball.pos.x -= ball.velocity.x;
 				ball.pos.y -= ball.velocity.y;
+			}
+
+			//玉が画面外に出たら発射フラグをリセット(テスト用)
+			if (ball.pos.x > 1280) {
+				ball.isShot = false;
+			}
+
+			if (ball.pos.x < -50) {
+				ball.isShot = false;
+			}
+
+			if (ball.pos.y > 720) {
+				ball.isShot = false;
+			}
+
+			if (ball.pos.y < -50) {
+				ball.isShot = false;
 			}
 
 			/*

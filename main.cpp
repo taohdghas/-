@@ -48,7 +48,14 @@ struct Player {
 	float angle;              //照準方向
 	int isAlive;              //生存フラグ
 	int stock;                //残機
+	Vector2 direction;        //方向
 };
+enum direction {
+	left = 1,
+	up,
+	right
+};
+int directionpoint = 2;
 
 //弾の構造体
 struct Ball {
@@ -56,7 +63,7 @@ struct Ball {
 	Vector2 velocity;         //速度
 	float radius;             //大きさ
 	unsigned int color;       //色
-	float speed;              //最高速度
+	float speed;
 	int isShot;               //発射フラグ
 	int HP;                   //反射に耐えられる回数
 };
@@ -67,7 +74,7 @@ struct Enemy {
 	float radius;             //大きさ
 	int isAlive;              //生存フラグ
 	int changeblock;          //ブロックの切り替えフラグ
-	Vector2 velocity;         //あげる速度
+	Vector2 direction;         //あげる方向
 };
 
 //回転する壁
@@ -100,7 +107,7 @@ struct RETRY {
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	// ライブラリの初期化
-	Novice::Initialize(kWindowTitle, 1280, 720);
+	Novice::Initialize(kWindowTitle, 1280, 736);
 
 	const int Map_W = 40;
 	const int Map_H = 23;
@@ -112,15 +119,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int	mapX = 0;
 	int	mapY = 0;
 	FILE* fp;
-	/*fp = fopen("test.txt", "r");
-	for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
-	fclose(fp);*/
 	enum MapNumber {
 		null,
 		kabe,
 		naname
 
 	};
+
 
 
 	/*int blockHandle[];
@@ -148,16 +153,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		0xffffffff,         //色
 		90.0f,              //照準方向
 		true,               //生存フラグ
-		3                   //残機
+		3,                   //残機
+	    {0,-1}
 	};
-
+	float ruto = 0;
 	//玉
 	Ball ball{
 		{player.pos.x,player.pos.y + 10}, //場所
-		{0,0},                            //速度 仮で0
-		10,                               //大きさ 仮で10
+		{20,20},                            //速度 仮で0
+	    10,                               //大きさ 仮で10
 		0xffffffff,                       //色 仮で0
-		20.0f,                            //最高速度
+	    20.0f,                            //最高速度
 		false,                            //発射フラグ
 		3,                                //HP 仮で3
 	};
@@ -169,12 +175,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		30,         //大きさ
 		false,          //生存フラグ
 		false,          //ブロックの切り替えフラグ
+		{0,-1}
 	};
 	Enemy enemyUP2{
 		{0,0},      //場所
 		30,         //大きさ
 		false,          //生存フラグ
 		false,          //ブロックの切り替えフラグ
+		{0,-1}
 	};
 	//
 	Enemy enemyDOWN1{
@@ -182,6 +190,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		30,         //大きさ
 		false,          //生存フラグ
 		false,          //ブロックの切り替えフラグ
+		{0,1}
 	};
 	//
 	Enemy enemyLEFT1{
@@ -189,13 +198,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		30,         //大きさ
 		false,          //生存フラグ
 		false,          //ブロックの切り替えフラグ
+		{-1,0}
 	};
 	//
-	Enemy enemyLIGHT1{
+	Enemy enemyRIGHT1{
 		{0,0},      //場所
 		30,         //大きさ
 		false,          //生存フラグ
 		false,          //ブロックの切り替えフラグ
+		{1,0}
 	};
 
 	Block block1{
@@ -268,83 +279,107 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		//ステージの読み込み(仮)
+		switch (screenscene) {
+		case STAGE1:
+			fp = fopen("test.txt", "r");
+			for (int i = 0; i < 23; i++)for (int j = 0; j < 40; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			break;
+		case STAGE2:
+			fp = fopen("test2.txt", "r");
+			for (int i = 0; i < 23; i++)for (int j = 0; j < 40; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			break;
+		case STAGE3:
+
+			break;
+		}
+
 		//玉と敵の当たり判定
-		/*
+		
 		  int distance1 = Length( ball.pos.x - enemyUP1.pos.x,ball.pos.y - enemyUP1.pos.y);
-		 if(distance1 <= 00){
+		 if(distance1 <= 500){
 		    ball.isShot = false;
 			enemyUP1.isAlive = false;
 			//矢印の方向へ行く
-			ball.pos.y -= ball.velocity.y;
+			player.direction.y = enemyUP1.direction.y;
 			}
 
 			 int distance1-2 = Length( ball.pos.x - enemyUP2.pos.x,ball.pos.y - enemyUP2.pos.y);
-		 if(distance1-2 <= 00){
+		 if(distance1-2 <= 500){
 			ball.isShot = false;
 			enemyUP2.isAlive = false;
 			//矢印の方向へ行く
-			ball.pos.y -= ball.velocity.y;
+			player.direction.y = enemyUP2.direction.y;
 			}
 
 		  int distance2 = Length( ball.pos.x - enemyDOWN1.pos.x, ball.pos.y - enemyDOWN1.pos.y);
-		 if(distance2 <= 00){
+		 if(distance2 <= 500){
 			ball.isShot = false;
 			enemyDOWN1.isAlive = false;
 			//矢印の方向へ行く
-			ball.pos.y += ball.velocity.y;
+			player.direction.y = enemyDOWN1.direction.y;
 			}
 
 		 int distance3 = Length( ball.pos.x - enemyLEFT1.pos.x, ball.pos.y - enemyLEFT1.pos.y);
-		 if(distance3 <= 00){
+		 if(distance3 <= 500){
 			ball.isShot = false;
 			enemyLEFT1.isAlive = false;
 			//矢印の方向へ行く
-			ball.pos.x += ball.velocity.x;
+			player.direction.x = enemyLEFT1.direction.x;
 			}
 
-		 int distance4 = Length( ball.pos.x - enemyLIGHT1.pos.x, ball.pos.y - enemyLIGHT1.pos.y);
-		 if(distance4 <= 00){
+		 int distance4 = Length( ball.pos.x - enemyRIGHT1.pos.x, ball.pos.y - enemyRIGHT1.pos.y);
+		 if(distance4 <= 500){
 			ball.isShot = false;
-			enemyLIGHT1.isAlive = false;
+			enemyRIGHT1.isAlive = false;
 			//矢印の方向へ行く
-			ball.pos.x -= ball.velocity.x;
+			player.direction.x = enemyRIGHT1.direction.x;
 			}
-		*/
+		
 
 		//マップチップの当たり判定
-		ballMapX = int(ball.pos.x / ball.radius - ball.velocity.x);
-		ballMapY = int(ball.pos.y / ball.radius - ball.velocity.y);
-		mapX = int(ball.pos.x / ball.radius);
-		mapY = int(ball.pos.y / ball.radius);
-		if (ball.velocity.x == 0.0f) {
+		ballMapX = int(ball.pos.x / Map_radius + player.direction.x);
+		ballMapY = int(ball.pos.y / Map_radius + player.direction.y);
+		mapX = int(ball.pos.x / Map_radius);
+		mapY = int(ball.pos.y / Map_radius);
+		if (player.direction.x == 0.0f) {
 			if (map[ballMapY][ballMapX] == kabe) {
-				ball.velocity.y *= -1;
+				player.direction.y *= -1;
+				ball.HP--;
 			}
 			if (map[ballMapY][ballMapX] == naname) {
-				ball.velocity.x = ball.velocity.y;
+				player.direction.x = player.direction.y;
+				ball.HP--;
 			}
 		}
-		else if (ball.velocity.y == 0.0f) {
+		else if (player.direction.y == 0.0f) {
 			if (map[ballMapY][ballMapX] == kabe) {
-				ball.velocity.x *= -1;
+				player.direction.x *= -1;
+				ball.HP--;
 			}
 			if (map[ballMapY][ballMapX] == naname) {
-				ball.velocity.y = ball.velocity.x;
+				player.direction.y = player.direction.x;
+				ball.HP--;
 			}
 		}
-		/*else {
+		else {
 			if (map[ballMapY][mapX] == kabe) {
-				ball.velocity.x *= -1;
+				player.direction.y *= -1;
+				ball.HP--;
 			}
 			if (map[mapY][ballMapX] == kabe) {
-				ball.velocity.y *= -1;
+				player.direction.x *= -1;
+				ball.HP--;
 			}
-			/*if (map[mapY][ballMapX] == naname || map[ballMapY][mapX] == naname) {
-				ball.velocity.x *= -1;
-				ball.velocity.y *= -1;
+			if (map[mapY][ballMapX] == naname && map[ballMapY][mapX] == naname) {
+				player.direction.x *= -1;
+				player.direction.y *= -1;
 			}
-			
-		}*/
+		}
+
+	    
 
 		switch (screenscene) {
 		case TITLE:
@@ -363,9 +398,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//case SELECT:
 				//break;
 		case STAGE1:
-			fp = fopen("test.txt", "r");
+			/*fp = fopen("test.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
-			fclose(fp); //ステージの読み込み
+			fclose(fp); //ステージの読み込み*/
 			player.pos.x = 300;
 			player.pos.y = 650;
 			ball.HP = 5; //仮
@@ -379,6 +414,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			enemyDOWN1.isAlive = true;
 			enemyLEFT1.isAlive = true;
 
+
 			//マップチップ(プロト版)
 
 			//弾が発射できる状態であればプレイヤーを操作できる
@@ -387,21 +423,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				/*玉の発射方向*/
 
 				//左矢印キーが押されたら左に45度傾く
-				if (keys[DIK_LEFTARROW] && !preKeys[DIK_LEFTARROW]) {
-					player.angle -= 45.0f;
+				if (keys[DIK_LEFTARROW] && !preKeys[DIK_LEFTARROW] && directionpoint > 1) {
+					directionpoint -= 1;
+					//player.angle -= 45.0f;
 				}
 				//右矢印キーが押されたら右に45度傾く
-				if (keys[DIK_RIGHTARROW] && !preKeys[DIK_RIGHTARROW]) {
-					player.angle += 45.0f;
+				if (keys[DIK_RIGHTARROW] && !preKeys[DIK_RIGHTARROW] && directionpoint < 3) {
+					directionpoint += 1;
+					//player.angle += 45.0f;
 				}
-
+				switch(directionpoint){
+				case left:
+					player.direction = { -1,1 };
+					break;
+				case up:
+					player.direction = { 0,-1 };
+					break;
+				case right:
+					player.direction = { 1,1 };
+					break;
+				}
 				//限界角度以上傾かないようにする
-				if (player.angle > 135.0f) {
-					player.angle = 135.0f;
-				}
-				if (player.angle < 45.0f) {
-					player.angle = 45.0f;
-				}
+				//if (player.angle > 135.0f) {
+					//player.angle = 135.0f;
+				//}
+				//if (player.angle < 45.0f) {
+					//player.angle = 45.0f;
+				//}
 
 				/*玉の発射処理*/
 
@@ -410,11 +458,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					//弾の位置をプレイヤーの頭上に設定
 					ball.pos = { player.pos.x,player.pos.y };
-
-					//弾の速度を照準方向から設定
-					//方向はdegreeからradianに変換する
-					ball.velocity = { cosf(player.angle * (3.14f / 180.0f)) * ball.speed
-									 ,sinf(player.angle * (3.14f / 180.0f)) * ball.speed };
 
 					//発射フラグをtrueにする
 					//これで弾が消えるまでプレイヤーを操作できなくなる
@@ -426,8 +469,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//弾が発射されたら移動を開始する
 			if (ball.isShot) {
-				ball.pos.x -= ball.velocity.x;
-				ball.pos.y -= ball.velocity.y;
+				ruto = Length(player.direction.x, player.direction.y);
+				if (ruto != 0.0f) {
+					ball.pos.x += player.direction.x / ruto * ball.velocity.x;
+					ball.pos.y += player.direction.y / ruto * ball.velocity.y;
+				}
 			}
 
 			//玉が画面外に出たら発射フラグをリセット(テスト用)
@@ -447,16 +493,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				ball.isShot = false;
 			}
 
-			/*
-			if (もし玉が反射可能回数に達したら) {
+			
+			if (ball.HP == 0) {
+
+			}
 			//発射フラグをfalseに
 			//盤面と反射可能回数をリセット
-			ball.isshot = false;
+			/*ball.isshot = false;
 			ball.HP = 5;
 			enemyUP1.isAlive = true;
 			enemyDOWN1.isAlive = true;
 			enemyLEFT1.isAlive = true;
-			}
+			
 			*/
 
 			//全ての敵の生存フラグがfalseならステージクリア
@@ -485,9 +533,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			*/
 			break;
 		case STAGE2:
-			fp = fopen("test2.txt", "r");
+			/*fp = fopen("test2.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
-			fclose(fp);  //ステージの読み込み
+			fclose(fp);  //ステージの読み込み*/
 			player.pos.x = 300;
 			player.pos.y = 650;
 			ball.HP = 5; //仮
@@ -497,6 +545,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			enemyUP2.pos.y = 300;
 			enemyUP1.isAlive = true;
 			enemyUP2.isAlive = true;
+			
 
 			//弾が発射できる状態であればプレイヤーを操作できる
 			if (!ball.isShot) {
@@ -504,19 +553,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				//左矢印キーが押されたら左に45度傾く
 				if (keys[DIK_LEFTARROW] && !preKeys[DIK_LEFTARROW]) {
-					player.angle += 45.0f;
+					//player.angle += 45.0f;
+					ball.velocity = {};
 				}
 				//右矢印キーが押されたら右に45度傾く
 				if (keys[DIK_RIGHTARROW] && !preKeys[DIK_RIGHTARROW]) {
-					player.angle -= 45.0f;
+					//player.angle -= 45.0f;
 				}
 
 				//限界角度以上傾かないようにする
 				if (player.angle > 45.0f) {
-					player.angle = 45.0f;
+					//player.angle = 45.0f;
 				}
 				if (player.angle < -45.0f) {
-					player.angle < -45.0f;
+					//player.angle < -45.0f;
 				}
 
 				/*玉の発射処理*/
@@ -529,8 +579,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					//弾の速度を照準方向から設定
 					//方向はdegreeからradianに変換する
-					ball.velocity = { cosf(player.angle * (3.14f / 180.0f)) * ball.speed
-									 ,sinf(player.angle * (3.14f / 180.0f)) * ball.speed };
+					//ball.velocity = { cosf(player.angle * (3.14f / 180.0f)) * ball.speed
+									 //,sinf(player.angle * (3.14f / 180.0f)) * ball.speed };
 
 					//発射フラグをtrueにする
 					//これで弾が消えるまでプレイヤーを操作できなくなる
@@ -550,6 +600,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//回転する壁
 			/*
 			block.angle += block.rotationspeed;
+			if(block.angle = 45.0f){
+			block.rotationspeed = 0;
+
+			}
 			//半分回転したら回転を止め、少したったらまた回転
 
 			*/
@@ -624,8 +678,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 					//弾の速度を照準方向から設定
 					//方向はdegreeからradianに変換する
-					ball.velocity = { cosf(player.angle * (3.14f / 180.0f)) * ball.speed
-									 ,sinf(player.angle * (3.14f / 180.0f)) * ball.speed };
+					//ball.velocity = { cosf(player.angle * (3.14f / 180.0f)) * ball.speed
+									 //,sinf(player.angle * (3.14f / 180.0f)) * ball.speed };
 
 					//発射フラグをtrueにする
 					//これで弾が消えるまでプレイヤーを操作できなくなる
@@ -691,7 +745,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case TITLE:
 			break;
 		case STAGE1:
-		    
+			Novice::ScreenPrintf(0, 20, "BMX %d", ballMapX);
+			Novice::ScreenPrintf(0, 40, "BMY %d", ballMapY);
+			Novice::ScreenPrintf(0, 60, "MX %d", mapX);
+			Novice::ScreenPrintf(0, 80, "MY %d", mapY);
+			Novice::ScreenPrintf(0, 100, "BVX %f", ball.velocity.x);
+			Novice::ScreenPrintf(0, 120, "BVX %f", ball.velocity.y);
+			
 			//マップチップ(プロトタイプ)
 			for (int i = 0; i < 23; i++) {
 				for (int j = 0; j < 40; j++) {

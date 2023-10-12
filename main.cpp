@@ -28,6 +28,14 @@ void PrintMap(int a, int b, int c, int d, int e, int f, unsigned int g) { //Posx
 		d * c, e * c, c, c,
 		f, g);
 }
+int CTcount(int ct, int time) {
+	if (ct + 1 > time) {
+		return 0;
+	}
+	else {
+		return ct + 1;
+	}
+}
 //ベクトル
 struct Vector2 {
 	float x;                  //X軸
@@ -47,7 +55,6 @@ struct Player {
 	unsigned int color;       //色
 	float angle;              //照準方向
 	int isAlive;              //生存フラグ
-	int stock;                //残機
 	Vector2 direction;        //方向
 };
 enum direction {
@@ -66,6 +73,7 @@ struct Ball {
 	float speed;
 	int isShot;               //発射フラグ
 	int HP;                   //反射に耐えられる回数
+	int remainingballs;      //残りの玉の数
 };
 
 //敵の構造体
@@ -153,8 +161,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		25 ,                //大きさ
 		0xffffffff,         //色
 		90.0f,              //照準方向
-		true,               //生存フラグ
-		3,                   //残機
+		true,               //生存フラグ                
 		{0,-1}
 	};
 
@@ -166,7 +173,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		0xffffffff,                       //色 仮で0
 		20.0f,                            //最高速度
 		false,                            //発射フラグ
-		5,                                //HP 仮で3
+		5,                                //HP
+		3,
 	};
 	int ballMapNum = 0;
 
@@ -263,6 +271,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		false,
 	};
 
+	RETRY retry{
+		{0,0},
+		false,
+	};
 
 	// 画面変化
 	enum screen {
@@ -434,7 +446,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				enemyUP1.isAlive = true;
 				enemyDOWN1.isAlive = true;
 				enemyLEFT1.isAlive = true;
-				Stagescene = STAGE4;
+				Stagescene = 0;
 				break;
 			case STAGE2:
 				player.pos.x = 300;
@@ -446,6 +458,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				enemyUP2.pos.y = 300;
 				enemyUP1.isAlive = true;
 				enemyUP2.isAlive = true;
+				Stagescene = 0;
 				break;
 			case STAGE3:
 				player.pos.x = 300;
@@ -460,6 +473,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				enemyUP1.isAlive = true;
 				enemyUP2.isAlive = true;
 				enemyRIGHT1.isAlive = true;
+				Stagescene = 0;
+				break;
+			default:
 				break;
 			}
 			//マップチップ(プロト版)
@@ -539,23 +555,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//stageclear1.flag = true;
 			}
 
-			//if(stageclear1.flag){
+			/*if (stageclear1.flag) {
+		    stageclear1.pos.y += 5;
+			if
+			}
+			*/
 
-			//}
-
-			/*if(ステージクリアの文字が出た){
-			if(keys[DIK_SPACE]&&preKeys[DIK_SPACE] == 0){
-			   screencene = STAGE2   //次のステージへ
-			   }
+		    /*if(ステージクリアの文字が出た){
+			//spaceキーを押して次のステージに進む。長押しでタイトルに戻れる
 			}*/
-			//もし玉を全て打ち切ってしまったらリトライ
-		/*
-		if(残り玉数が0なら){
-		retry.flag = true;
-		}
 
+		//もし玉を全て打ち切ってしまったらリトライ
+		
+		if(ball.remainingballs == 0){
+			retry.flag = true;
+		}
+		/*
 		if(retry.flag){
 		//リトライの文字が出る
+		//spaceキーを押してリトライするか、長押しでタイトルに戻る(未定)
 		}
 		*/
 			break;

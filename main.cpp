@@ -555,11 +555,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//stageclear1.flag = true;
 			}
 
-			/*if (stageclear1.flag) {
-		    stageclear1.pos.y += 5;
-			if
-			}
-			*/
 
 		    /*if(ステージクリアの文字が出た){
 			//spaceキーを押して次のステージに進む。長押しでタイトルに戻れる
@@ -593,12 +588,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		case STAGE:
 
+			/*
 			Novice::ScreenPrintf(0, 20, "BMX %d", ballMapX);
 			Novice::ScreenPrintf(0, 40, "BMY %d", ballMapY);
 			Novice::ScreenPrintf(0, 60, "MX %d", mapX);
 			Novice::ScreenPrintf(0, 80, "MY %d", mapY);
 			Novice::ScreenPrintf(0, 100, "PDX %f", player.direction.x);
 			Novice::ScreenPrintf(0, 120, "PDY %f", player.direction.y);
+			*/
 
 			//マップチップ(プロトタイプ)
 			for (int i = 0; i < 23; i++) {
@@ -657,6 +654,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					int(enemyRIGHT1.radius), int(enemyRIGHT1.radius), 0.0f, WHITE, kFillModeSolid);
 			}
 			//UI・HUDなど//
+			//ステージクリア
+			/*
+			if(stageclear1.flag){
+			何かしらの演出をしたうえで描画する
+			}
+			*/
 			break;
 
 		case CLEAR:

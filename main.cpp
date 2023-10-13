@@ -678,10 +678,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					int(enemyDOWN1.radius), 0.0f, BLUE, kFillModeSolid);
 			}
 
+			if (enemyDOWN2.isAlive) {
+				Novice::DrawEllipse(int(enemyDOWN2.pos.x), int(enemyDOWN2.pos.y), int(enemyDOWN2.radius),
+					int(enemyDOWN2.radius), 0.0f, RED, kFillModeSolid);
+			}
+
 			//LEFT
 			if (enemyLEFT1.isAlive) {
 				Novice::DrawEllipse(int(enemyLEFT1.pos.x), int(enemyLEFT1.pos.y), int(enemyLEFT1.radius),
 					int(enemyLEFT1.radius), 0.0f, GREEN, kFillModeSolid);
+			}
+
+			if (enemyLEFT2.isAlive) {
+				Novice::DrawEllipse(int(enemyLEFT2.pos.x), int(enemyLEFT2.pos.y), int(enemyLEFT2.radius),
+					int(enemyLEFT2.radius), 0.0f, RED, kFillModeSolid);
 			}
 
 			//LIGHT
@@ -689,6 +699,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Novice::DrawEllipse(int(enemyRIGHT1.pos.x), int(enemyRIGHT1.pos.y),
 					int(enemyRIGHT1.radius), int(enemyRIGHT1.radius), 0.0f, WHITE, kFillModeSolid);
 			}
+
+			if (enemyRIGHT2.isAlive) {
+				Novice::DrawEllipse(int(enemyRIGHT2.pos.x), int(enemyRIGHT2.pos.y), 
+					int(enemyRIGHT2.radius),int(enemyRIGHT2.radius), 0.0f, RED, kFillModeSolid);
+			}
+
 			//UI・HUDなど//
 			//ステージクリア
 			/*

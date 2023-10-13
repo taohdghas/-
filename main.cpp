@@ -130,7 +130,7 @@ void Hitballenemy(Ball& ball, Enemy& enemy) {
 		ball.direction = { enemy.direction.x,enemy.direction.y };
 	}
 }
-void Hitmapball(Map map, Ball ball) {
+void Hitmapball(Map map, Ball& ball) {
 	int ballMapX = int(ball.pos.x / map.radius + ball.direction.x);
 	int ballMapY = int(ball.pos.y / map.radius + ball.direction.y);
 	int mapX = int(ball.pos.x / map.radius);

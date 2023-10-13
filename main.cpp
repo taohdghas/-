@@ -85,14 +85,15 @@ struct Enemy {
 	Vector2 direction;         //あげる方向
 };
 
-//回転する壁
-struct Block {
+//回転する壁 (現段階では実装不可能？)
+/*struct Block {
 	Vector2 pos;
 	Vector2 Map_Pos;
 	int Map_Num;
 	float angle; //回転の角度
 	float rotationspeed; //回転の速度
 };
+*/
 
 //ステージの構造体
 struct Stage {
@@ -242,13 +243,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{1,0}
 	};
 
-	Block block1{
+	/*Block block1{
 		{0,0},
 		{0,0},
 		0,
 		0,
 		0,
 	};
+	*/
 
 	Stage stage1{
 		false,

@@ -478,10 +478,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				player.pos.x = 300;
 				player.pos.y = 650;
 				ball.HP = 5; //仮
-				enemyUP1.pos.x = 100;
-				enemyUP1.pos.y = 600;
-				enemyUP2.pos.x = 900;
-				enemyUP2.pos.y = 300;
+				enemyUP1.pos.x = 0;
+				enemyUP1.pos.y = 0;
+				enemyUP2.pos.x = 0;
+				enemyUP2.pos.y = 0;
 				enemyUP1.isAlive = true;
 				enemyUP2.isAlive = true;
 				Stagescene = 0;
@@ -532,6 +532,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					player.direction = { 1,-1 };
 					break;
 				}
+
 				//限界角度以上傾かないようにする
 				//if (player.angle > 135.0f) {
 					//player.angle = 135.0f;
@@ -565,8 +566,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-			//玉が上限まで反射したらリセット
-
+		//玉が上限まで反射したらリセット
 			if (ball.HP == 0) {
 				ball.isShot = false;
 				ball.HP = 5;
@@ -581,6 +581,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//stageclear1.flag = true;
 			}
 
+			/*if (stageclear1.flag) {
+			ステージクリアの文字を表示させる
+			何かしらの演出を入れる
+			}
+			*/
 
 		    /*if(ステージクリアの文字が出た){
 			//spaceキーを押して次のステージに進む。長押しでタイトルに戻れる

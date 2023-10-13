@@ -118,6 +118,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 736);
 
+
+
 	const int Map_W = 40;
 	const int Map_H = 23;
 	int Map_radius = 32;

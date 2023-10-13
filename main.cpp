@@ -193,7 +193,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		false,          //ブロックの切り替えフラグ
 		{0,-1}
 	};
-	//
+	
 	Enemy enemyDOWN1{
 		{1000,1000},      //場所
 		30,         //大きさ
@@ -201,7 +201,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		false,          //ブロックの切り替えフラグ
 		{0,1}
 	};
-	//
+	
+	Enemy enemyDOWN2{
+		{0,0},
+		30,
+		false,
+		false,
+		{0,1}
+	};
+
 	Enemy enemyLEFT1{
 		{1000,1000},      //場所
 		30,         //大きさ
@@ -209,12 +217,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		false,          //ブロックの切り替えフラグ
 		{-1,0}
 	};
-	//
+	
+	Enemy enemyLEFT2{
+		{0,0},
+		30,
+		false,
+		false,
+		{-1,0}
+	};
+
 	Enemy enemyRIGHT1{
 		{1000,1000},      //場所
 		30,         //大きさ
 		false,          //生存フラグ
 		false,          //ブロックの切り替えフラグ
+		{1,0}
+	};
+
+	Enemy enemyRIGHT2{
+		{0,0},
+		30,
+		false,
+		false,
 		{1,0}
 	};
 
@@ -636,6 +660,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					int(enemyUP1.radius), 0.0f, RED, kFillModeSolid);
 			}
 
+			if (enemyUP2.isAlive) {
+				Novice::DrawEllipse(int(enemyUP2.pos.x), int(enemyUP2.pos.y), int(enemyUP2.radius),
+					int(enemyUP2.radius), 0.0f, RED, kFillModeSolid);
+			}
+
 			//DOWN
 			if (enemyDOWN1.isAlive) {
 				Novice::DrawEllipse(int(enemyDOWN1.pos.x), int(enemyDOWN1.pos.y), int(enemyDOWN1.radius),
@@ -657,6 +686,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//ステージクリア
 			/*
 			if(stageclear1.flag){
+			何かしらの演出をしたうえで描画する
+			}
+
+			if(stageclear2.flag){
+            何かしらの演出をしたうえで描画する 
+			}
+
+			if(stageclear3.flag){
 			何かしらの演出をしたうえで描画する
 			}
 			*/

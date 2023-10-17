@@ -130,6 +130,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int	mapX = 0;
 	int	mapY = 0;
 	int mapenemy = 0;
+	int enemyhp[20] = { 0 };
 	FILE* fp;
 	enum MapNumber {
 		null,
@@ -325,7 +326,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			fclose(fp);
 			break;
 		}
-
 		//玉と敵の当たり判定
 		for (int i = 0; i < 20; i++) {
 			Hitballenemy(ball, enemy[i], player.direction);

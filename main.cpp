@@ -108,7 +108,7 @@ struct Enemy {
 
 //ステージの構造体
 struct Stage {
-	int clear;                //クリアしたか
+	int clear;//クリアしたか
 
 };
 //ステージクリア演出の構造体

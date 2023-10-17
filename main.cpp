@@ -15,10 +15,12 @@ float Normalize(float aPos, float length) //正規化
 		return aPos;
 	}
 }
+
 float Length(float x, float y)
 {
 	return sqrtf(x * x + y * y);
 }
+
 void PrintMap(int a, int b, int c, int d, int e, int f, unsigned int g) { //Posx,Posy,Radius,TileNumberW,TileNumberH,gazo,color
 	Novice::DrawQuad(
 		a * c, b * c,
@@ -28,6 +30,7 @@ void PrintMap(int a, int b, int c, int d, int e, int f, unsigned int g) { //Posx
 		d * c, e * c, c, c,
 		f, g);
 }
+
 int CTcount(int ct, int time) {
 	if (ct + 1 > time) {
 		return 0;
@@ -36,6 +39,7 @@ int CTcount(int ct, int time) {
 		return ct + 1;
 	}
 }
+
 //ベクトル
 struct Vector2 {
 	float x;                  //X軸
@@ -47,17 +51,21 @@ struct Size2 {
 	const int width;          //幅
 	const int height;         //高さ
 };
+
 const int Map_W = 40;
 const int Map_H = 23;
+
 struct Map {
 	int m[Map_H][Map_W];
 	int radius;
 };
+
 enum MapNumber {
 	null,
 	kabe,
 	naname
 };
+
 //プレイヤーの構造体
 struct Player {
 	Vector2 pos;              //場所
@@ -67,11 +75,13 @@ struct Player {
 	int isAlive;              //生存フラグ
 	Vector2 direction;        //方向
 };
+
 enum direction {
 	left = 1,
 	up,
 	right
 };
+
 int directionpoint = 2;
 
 //玉の構造体
@@ -80,11 +90,11 @@ struct Ball {
 	Vector2 velocity;         //速度
 	Vector2 direction;        //方向
 	float radius;             //大きさ
-	unsigned int color;       //色
+	unsigned int color;       //色    
 	float speed;
 	int isShot;               //発射フラグ
 	int HP;                   //反射に耐えられる回数
-	int remainingballs;      //残りの玉の数
+	int remainingballs;       //残りの玉の数
 };
 
 //敵の構造体
@@ -111,6 +121,7 @@ struct Stage {
 	int clear;//クリアしたか
 
 };
+
 //ステージクリア演出の構造体
 struct StageClear {
 	Vector2 pos;
@@ -122,57 +133,21 @@ struct RETRY {
 	Vector2 pos;
 	int flag;
 };
+
 void Hitballenemy(Ball& ball, Enemy& enemy) {
+
 	float distance = Length(ball.pos.x - enemy.pos.x, ball.pos.y - enemy.pos.y);
+
 	if (distance <= Length(ball.radius, enemy.radius) && enemy.isAlive) {
+
 		enemy.isAlive = false;
+
 		//矢印の方向へ行く
 		ball.direction = { enemy.direction.x,enemy.direction.y };
+
 	}
 }
-void Hitmapball(Map map, Ball& ball) {
-	int ballMapX = int(ball.pos.x / map.radius + ball.direction.x);
-	int ballMapY = int(ball.pos.y / map.radius + ball.direction.y);
-	int mapX = int(ball.pos.x / map.radius);
-	int mapY = int(ball.pos.y / map.radius);
-	if (ball.direction.x == 0.0f) {
-		if (map.m[ballMapY][ballMapX] == kabe) {
-			ball.direction.y *= -1;
-			ball.HP--;
-		}
-		if (map.m[ballMapY][ballMapX] == naname) {
-			ball.direction.x = ball.direction.y * -1;
-			ball.direction.y = 0;
-			ball.HP--;
-		}
-	}
-	else if (ball.direction.y == 0.0f) {
-		if (map.m[ballMapY][ballMapX] == kabe) {
-			ball.direction.x *= -1;
-			ball.HP--;
-		}
-		if (map.m[ballMapY][ballMapX] == naname) {
-			ball.direction.y = ball.direction.x * -1;
-			ball.direction.x = 0;
-			ball.HP--;
-		}
-	}
-	else {
-		if (map.m[ballMapY][mapX] == kabe) {
-			ball.direction.y *= -1;
-			ball.HP--;
-		}
-		if (map.m[mapY][ballMapX] == kabe) {
-			ball.direction.x *= -1;
-			ball.HP--;
-		}
-		if (map.m[mapY][ballMapX] == naname && map.m[ballMapY][mapX] == naname || map.m[ballMapY][ballMapX] == naname) {
-			ball.direction.x *= -1;
-			ball.direction.y *= -1;
-			ball.HP--;
-		}
-	}
-}
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -185,6 +160,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0},
 		32
 	};
+
+	int ballMapX = 0;
+	int ballMapY = 0;
+
+	int mapX = 0;
+	int mapY = 0;
 
 	/*int blockHandle[];
 	blockHandle[0] = Novice::LoadTexture("./block1.png");
@@ -218,21 +199,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	//玉
 	Ball ball{
 		{player.pos.x,player.pos.y + 10}, //場所
-		{15,15},                            //速度 仮で0
+		{15,15},                          //速度 仮で0
 		10,                               //大きさ 仮で10
 		0xffffffff,                       //色 仮で0
 		20.0f,                            //最高速度
 		false,                            //発射フラグ
 		5,                                //HP
-		3,
+		3,                                //残りの弾の数
 	};
+
 	int ballMapNum = 0;
 
-	//
+	//敵
 	Enemy enemy[20]{
-		{{1000,1000},{0,-1},30,false,false} //場所//方向 //大きさ//生存フラグ//ブロックの切り替えフラグ
+		//場所//方向 //大きさ//生存フラグ//ブロックの切り替えフラグ
+		{{1000,1000},{ 0,-1},30,false,false},//下1
+		{{1000,1000},{ 0, 1},30,false,false}, //上1
+		{{1000,1000},{ 1, 0},30,false,false}, //右1
+		{{1000,1000},{-1, 0},30,false,false},//左1
+		{{1000,1000},{ 0,-1},30,false,false},//下2
+		{{1000,1000},{ 0, 1},30,false,false}, //上2
+		{{1000,1000},{ 1, 0},30,false,false}, //右2
+		{{1000,1000},{-1, 0},30,false,false},//左2
 	};
-	
+
+	float ruto = 0;
 
 	/*Block block1{
 		{0,0},
@@ -301,6 +292,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		CLEAR,   //クリア画面
 		RETRY    //リトライ画面
 	};
+
 	enum stage {
 		STAGE1 = 1,
 		STAGE2,
@@ -308,6 +300,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE4,
 		STAGE5,
 	};
+
 	int Stagescene = 1;
 
 	screen screenscene = STAGE; //表示されるシーン
@@ -340,6 +333,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			fp = fopen("test2.txt", "r");
 			for (int i = 0; i < 23; i++)for (int j = 0; j < 40; j++)fscanf(fp, "%d", &map.m[i][j]);
 			fclose(fp);
+
 			break;
 		case STAGE3:
 			fp = fopen("test3.txt", "r");
@@ -353,9 +347,48 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Hitballenemy(ball, enemy[0]);
 		}
 
-			//マップチップの当たり判定
-		Hitmapball(map,ball);
-
+		//マップチップの当たり判定
+		ballMapX = int(ball.pos.x + ball.direction.x) / map.radius;
+		ballMapY = int(ball.pos.y + ball.direction.y) / map.radius;
+		mapX = int(ball.pos.x / map.radius);
+	    mapY = int(ball.pos.y / map.radius);
+		if (ball.direction.x == 0.0f) {
+			if (map.m[ballMapY][ballMapX] == kabe) {
+				ball.direction.y *= -1.0f;
+				ball.HP--;
+			}
+			if (map.m[ballMapY][ballMapX] == naname) {
+				ball.direction.x = ball.direction.y * -1.0f;
+				ball.direction.y = 0.0f;
+				ball.HP--;
+			}
+		}
+		else if (ball.direction.y == 0.0f) {
+			if (map.m[ballMapY][ballMapX] == kabe) {
+				ball.direction.x *= -1.0f;
+				ball.HP--;
+			}
+			if (map.m[ballMapY][ballMapX] == naname) {
+				ball.direction.y = ball.direction.x * -1.0f;
+				ball.direction.x = 0.0f;
+				ball.HP--;
+			}
+		}
+		else {
+			/*if (map.m[ballMapY][mapX] == kabe) {
+				ball.direction.y *= -1.f;
+				ball.HP--;
+			}
+			if (map.m[mapY][ballMapX] == kabe) {
+				ball.direction.x *= -1;
+				ball.HP--;
+			}
+			if (map.m[mapY][ballMapX] == naname && map.m[ballMapY][mapX] == naname || map.m[ballMapY][ballMapX] == naname) {
+				ball.direction.x *= -1;
+				ball.direction.y *= -1;
+				ball.HP--;
+			}*/
+		}
 
 
 		switch (screenscene) {
@@ -381,13 +414,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				player.pos.x = 300;
 				player.pos.y = 650;
 				ball.HP = 5; //仮
-				enemy[0].pos.x = 900;
-				enemy[0].pos.y = 400;
+				enemy[0].pos.x = 200;
+				enemy[0].pos.y = 100;
+				enemy[1].pos.x = 900;
+				enemy[1].pos.y = 400;
+				enemy[3].pos.x = 900;
+				enemy[3].pos.y = 100;
 				/*enemyDOWN1.pos.x = 200;
 				enemyDOWN1.pos.y = 100;
 				enemyLEFT1.pos.x = 900;
 				enemyLEFT1.pos.y = 100;*/
 				enemy[0].isAlive = true;
+				enemy[1].isAlive = true;
+				enemy[3].isAlive = true;
 				//enemyDOWN1.isAlive = true;
 				//enemyLEFT1.isAlive = true;
 				Stagescene = 0;
@@ -396,6 +435,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				player.pos.x = 300;
 				player.pos.y = 650;
 				ball.HP = 5; //仮
+				enemy[0].pos.x = 0;
+				enemy[0].pos.y = 0;
+				enemy[1].pos.x = 0;
+				enemy[1].pos.y = 0;
+				enemy[3].pos.x = 0;
+				enemy[3].pos.y = 0;
+				enemy[6].pos.x = 0;//上2
+				enemy[6].pos.y = 0;//上2
+				enemy[0].isAlive = true;
+				enemy[0].isAlive = true;
+				enemy[1].isAlive = true;
+				enemy[1].isAlive = true;
+				enemy[3].isAlive = true;
+				enemy[3].isAlive = true;
+				enemy[6].isAlive = true;//上3
+				enemy[6].isAlive = true;//上2
+				enemy[6].changeblock = false;
 				/*enemyUP1.pos.x = 0;
 				enemyUP1.pos.y = 0;
 				enemyUP2.pos.x = 0;
@@ -432,13 +488,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//左矢印キーが押されたら左に45度傾く
 				if (keys[DIK_LEFTARROW] && !preKeys[DIK_LEFTARROW] && directionpoint > 1) {
 					directionpoint -= 1;
-					//player.angle -= 45.0f;
 				}
 				//右矢印キーが押されたら右に45度傾く
 				if (keys[DIK_RIGHTARROW] && !preKeys[DIK_RIGHTARROW] && directionpoint < 3) {
 					directionpoint += 1;
-					//player.angle += 45.0f;
 				}
+
 				switch (directionpoint) {
 				case left:
 					player.direction = { -1,-1 };
@@ -451,19 +506,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					break;
 				}
 
-				//限界角度以上傾かないようにする
-				//if (player.angle > 135.0f) {
-					//player.angle = 135.0f;
-				//}
-				//if (player.angle < 45.0f) {
-					//player.angle = 45.0f;
-				//}
-
 				/*玉の発射処理*/
 
 				//Spaceキーが押されたら弾を発射する
 				if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-
+					ball.direction = { player.direction.x,player.direction.y };
 					//弾の位置をプレイヤーの頭上に設定
 					ball.pos = { player.pos.x,player.pos.y };
 
@@ -477,10 +524,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//弾が発射されたら移動を開始する
 			if (ball.isShot) {
-				float ruto = Length(player.direction.x, player.direction.y);
+				ruto = Length(ball.direction.x, ball.direction.y);
 				if (ruto != 0.0f) {
-					ball.pos.x += player.direction.x / ruto * ball.velocity.x;
-					ball.pos.y += player.direction.y / ruto * ball.velocity.y;
+					ball.pos.x += ball.direction.x / ruto * ball.velocity.x;
+					ball.pos.y += ball.direction.y / ruto * ball.velocity.y;
 				}
 			}
 
@@ -549,10 +596,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//マップチップ(プロトタイプ)
 			for (int i = 0; i < Map_H; i++) {
 				for (int j = 0; j < Map_W; j++) {
-					if (map.m[i][j] == 1) {
+					if (map.m[i][j] == kabe) {
 						Novice::DrawBox(j * map.radius, i * map.radius, map.radius, map.radius, 0.0f, RED, kFillModeWireFrame);
 					}
-					if (map.m[i][j] == 2) {
+					if (map.m[i][j] == naname) {
 						Novice::DrawBox(j * map.radius, i * map.radius, map.radius, map.radius, 0.0f, BLUE, kFillModeWireFrame);
 					}
 				}
@@ -561,7 +608,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			/*
 			for(int y = 0;y < Map_H;y++){
 			for(int x = 0;x < Map_W;x++){
-			PrintMap(Map.x,Map.y,rad,TileNum.W,TileNum.H,gazou,color);
+			PrintMap(x,y,map.rad,TileNum.W,TileNum.H,gazo,color);
 			}
 			}
 
@@ -571,6 +618,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Novice::DrawEllipse(int(player.pos.x), int(player.pos.y), int(player.radius),
 					int(player.radius), 0.0f, WHITE, kFillModeSolid);
 			}
+
+			//発射方向矢印の描画
 
 			//玉
 			if (ball.isShot) {
@@ -583,6 +632,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (enemy[0].isAlive) {
 				Novice::DrawEllipse(int(enemy[0].pos.x), int(enemy[0].pos.y), int(enemy[0].radius),
 					int(enemy[0].radius), 0.0f, RED, kFillModeSolid);
+			}
+
+			if (enemy[1].isAlive) {
+				Novice::DrawEllipse(int(enemy[1].pos.x), int(enemy[1].pos.y), int(enemy[1].radius),
+					int(enemy[1].radius), 0.0f, BLUE, kFillModeSolid);
+			}
+
+			if (enemy[3].isAlive) {
+				Novice::DrawEllipse(int(enemy[3].pos.x), int(enemy[3].pos.y), int(enemy[3].radius),
+					int(enemy[3].radius), 0.0f, GREEN, kFillModeSolid);
 			}
 			/*
 			if (enemyUP2.isAlive) {

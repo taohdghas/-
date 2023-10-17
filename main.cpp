@@ -109,6 +109,9 @@ void Hitballenemy(Ball ball, Enemy& enemy,Vector2& direction) {
 		if (enemy.hp == 0) {
 			enemy.isAlive = false;
 		}
+		else {
+
+		}
 		//矢印の方向へ行く
 		direction = { enemy.direction.x,enemy.direction.y };
 	}
@@ -157,6 +160,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		true,               //生存フラグ                
 		{0,-1}
 	};
+
 	//玉
 	Ball ball{
 		{player.pos.x,player.pos.y + 10}, //場所
@@ -170,27 +174,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 	int ballMapNum = 0;
 	//敵(1ステージに同じ方向が複数あるステージがあるかもなので数字を付けて差別化)
-	Enemy enemy[20]{
-		{{0,0},0,true,true,{0,0}}
-	};
-	for (int i = 0; i < 20; i++) {
-		enemy[i].isAlive = true;
-		enemy[i].changeblock = true;
-	}
-	for (int y = 0; y < Map_H; y++) {
-		for (int x = 0; x < Map_W; x++) {
-			for(int i = 0;i < 20;i++){
-				if (map[y][x] == enemynum && enemy[i].isAlive == true) {
-					enemy[i].radius = 30;
-					enemy[i].pos = { float(x) * enemy[i].radius,float(y) * enemy[i].radius };
-					enemy[i].isAlive = false;
-					enemy[i].changeblock = false;
-					enemy[i].direction = {0,-1};
-					break;
-				}
-			}
-		}
-	}
+	Enemy enemy[20]{0};
+	
 	/*Enemy enemyUP2{
 		{1000,1000},      //場所
 		30,         //大きさ
@@ -439,6 +424,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//break;
 			switch (Stagescene) {
 			case STAGE1:
+
 			case STAGE2:
 			case STAGE3:
 				//初期化
@@ -545,7 +531,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			*/
 			/*if(ステージクリアの文字が出た){
-			//spaceキーを押して次のステージに進む。長押しでタイトルに戻れる
+			//次のステージへ
+			if(keys[DIK_SPACE] && keys[DIK_SPACE] == 0){
+		    Stagescene = Stagescene += 1;
+			}
+			//長押しでタイトルへ戻る(未定)
+			if(keys[DIK_SPACE]){
+			screeenscene = TITLE;
+			}
 			}*/
 			//もし玉を全て打ち切ってしまったらリトライ
 			/*
@@ -617,7 +610,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					int(ball.radius), 0.0f, RED, kFillModeSolid);
 			}
 			///敵///
-			//UP
 			for (int i = 0; i < 20; i++) {
 				if (enemy[i].isAlive) {
 					Novice::DrawEllipse(int(enemy[i].pos.x), int(enemy[i].pos.y), int(enemy[i].radius),

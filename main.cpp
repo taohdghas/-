@@ -654,6 +654,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}*/
 
 			//UI・HUDなど//
+			//タイトル
+			
+			//説明？
+			
+			//ステージセレクト画面(未定)
+
+			//
+			
 			//ステージクリア
 			/*
 			if(stageclear1.flag){

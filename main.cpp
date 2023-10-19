@@ -16,6 +16,17 @@ float Normalize(float aPos, float length) //正規化
 float Length(float x, float y) {
 	return sqrtf(x * x + y * y);
 }
+float Clamp(float num, float min, float max) {
+	if (num < min) {
+		return min;
+	}
+	else if (num > max) {
+		return max;
+	}
+	else {
+		return num;
+	}
+}
 void PrintMap(int a, int b, int c, int d, int e, int f, unsigned int g) { //Posx,Posy,Radius,TileNumberW,TileNumberH,gazo,color
 	Novice::DrawQuad(
 		a * c, b * c,
@@ -37,6 +48,10 @@ int CTcount(int ct, int time) {
 struct Vector2 {
 	float x;                  //X軸
 	float y;                  //Y軸
+};
+//matrix
+struct Matrix2x2 {
+	float m[2][2];
 };
 //サイズ
 struct Size2 {
@@ -84,7 +99,13 @@ struct Enemy {
 	int hp;
 	int count;
 };
-//回転する壁 (現段階では実装不可能？)
+//回転する壁 (現段階では実装不可能？
+struct Woll {
+	Vector2 lt;
+	Vector2 rt;
+	Vector2 lb;
+	Vector2 rb;
+};
 /*struct Block {
 	Vector2 pos;
 	Vector2 Map_Pos;
@@ -107,6 +128,20 @@ struct Retry {
 	Vector2 pos;
 	int flag;
 };
+Vector2 Multiply(Vector2 v, Matrix2x2 matrix2) {
+	Vector2 v2;
+	v2.x = v.x * matrix2.m[0][0] + v.y * matrix2.m[1][0];
+	v2.y = v.x * matrix2.m[0][1] + v.y * matrix2.m[1][1];
+	return v2;
+}
+Matrix2x2 MakeRotateMatrix(float theta) {
+	Matrix2x2 m;
+	m.m[0][0] = cosf(theta);
+	m.m[0][1] = sinf(theta);
+	m.m[1][0] = -sinf(theta);
+	m.m[1][1] = cosf(theta);
+	return m;
+}
 void Hitballenemy(Ball ball, Enemy& enemy, Vector2& direction) {
 	float distance = Length(ball.pos.x - enemy.pos.x, ball.pos.y - enemy.pos.y);
 	Vector2 enemydirection = enemy.direction;
@@ -288,6 +323,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		case STAGE3:
 			fp = fopen("test3.txt", "r");
+			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			Stagescene = 0;
+			break;
+		case STAGE4:
+			fp = fopen("test4.txt", "r");
+			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			Stagescene = 0;
+			break;
+		case STAGE5:
+			fp = fopen("test5.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
 			Stagescene = 0;

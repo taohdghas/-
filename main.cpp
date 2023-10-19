@@ -90,10 +90,11 @@ struct Enemy {
 };
 //回転する壁 (現段階では実装不可能？
 struct Woll {
-	Vector2 lt;
-	Vector2 rt;
-	Vector2 lb;
-	Vector2 rb;
+	Vector2 pos;
+	int mapX;
+	int mapY;
+	int kn;
+	int isAlive;
 };
 /*struct Block {
 	Vector2 pos;
@@ -117,20 +118,6 @@ struct Retry {
 	Vector2 pos;
 	int flag;
 };
-Vector2 Multiply(Vector2 v, Matrix2x2 matrix2) {
-	Vector2 v2;
-	v2.x = v.x * matrix2.m[0][0] + v.y * matrix2.m[1][0];
-	v2.y = v.x * matrix2.m[0][1] + v.y * matrix2.m[1][1];
-	return v2;
-}
-Matrix2x2 MakeRotateMatrix(float theta) {
-	Matrix2x2 m;
-	m.m[0][0] = cosf(theta);
-	m.m[0][1] = sinf(theta);
-	m.m[1][0] = -sinf(theta);
-	m.m[1][1] = cosf(theta);
-	return m;
-}
 void Hitballenemy(Ball ball, Enemy& enemy, Vector2& direction) {
 	float distance = Length(ball.pos.x - enemy.pos.x, ball.pos.y - enemy.pos.y);
 	Vector2 enemydirection = enemy.direction;
@@ -149,13 +136,15 @@ void Hitballenemy(Ball ball, Enemy& enemy, Vector2& direction) {
 }
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
+	
 	// ライブラリの初期化
 	Novice::Initialize(kWindowTitle, 1280, 736);
 	const int Map_W = 40;
 	const int Map_H = 23;
+	const int kEnemyMax = 20;
 	int Map_radius = 32;
 	int map[Map_H][Map_W];
-	int enemyHP[20] = { 0 };
+	int enemyHP[kEnemyMax] = { 0 };
 	int ballMapX = 0;
 	int	ballMapY = 0;
 	int	mapX = 0;
@@ -170,7 +159,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		enemyUP,//4
 		enemyDOWN,//5
 		enemyRIGHT,//6
-		enemyLEFT//7
+		enemyLEFT,//7
+		kaiten,//8
 	};
 	Vector2 enemydirection[4]{
 		{0,-1},
@@ -214,14 +204,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 	//敵(1ステージに同じ方向が複数あるステージがあるかもなので数字を付けて差別化)
 	Enemy enemy[20]{ 0 };
-	/*Block block1{
+	
+	//回転する壁
+	Woll woll{
 		{0,0},
-		{0,0},
-		0,
-		0,
-		0,
+		0,0,
+		naname
 	};
-	*/
+	
 	Stage stage1{
 		false,
 	};
@@ -330,7 +320,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 		//玉と敵の当たり判定
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < kEnemyMax; i++) {
 			if (enemy[i].count == 0) {
 				Hitballenemy(ball, enemy[i], player.direction);
 			}
@@ -338,6 +328,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				enemy[i].count = CTcount(enemy[i].count, 60);
 			}
 		}
+		//回転当たり判定
 
 		//マップチップの当たり判定
 		ballMapX = int(ball.pos.x / Map_radius + player.direction.x);
@@ -345,29 +336,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		mapX = int(ball.pos.x / Map_radius);
 		mapY = int(ball.pos.y / Map_radius);
 		if (player.direction.x == 0.0f) {
-			if (map[ballMapY][ballMapX] == kabe) {
+			if (map[ballMapY][ballMapX] == kabe || map[ballMapY][ballMapX] == kaiten && woll.kn == kabe) {
 				player.direction.y *= -1;
 				ball.HP--;
 			}
-			if (map[ballMapY][ballMapX] == naname) {
+			if (map[ballMapY][ballMapX] == naname || map[ballMapY][ballMapX] == kaiten && woll.kn == naname) {
 				player.direction.x = player.direction.y * -1;
 				player.direction.y = 0;
 				ball.HP--;
 			}
 		}
 		else if (player.direction.y == 0.0f) {
-			if (map[ballMapY][ballMapX] == kabe) {
+			if (map[ballMapY][ballMapX] == kabe || map[ballMapY][ballMapX] == kaiten && woll.kn == kabe) {
 				player.direction.x *= -1;
 				ball.HP--;
 			}
-			if (map[ballMapY][ballMapX] == naname) {
+			if (map[ballMapY][ballMapX] == naname || map[ballMapY][ballMapX] == kaiten && woll.kn == naname) {
 				player.direction.y = player.direction.x * -1;
 				player.direction.x = 0;
 				ball.HP--;
 			}
 		}
 		else {
-			if (map[ballMapY][mapX] == kabe) {
+			if (map[ballMapY][mapX] == kabe || map[ballMapY][ballMapX] == kaiten && woll.kn == kabe) {
 				player.direction.y *= -1;
 				ball.HP--;
 			}
@@ -406,7 +397,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				ball.isShot = false;
 				ball.HP = 3; //仮
 				ball.remainingballs = 3;//仮
-				for (int i = 0; i < 20; i++) {
+				for (int i = 0; i < kEnemyMax; i++) {
 					enemy[i].isAlive = false;
 				}
 				for (int y = 0; y < Map_H; y++) {
@@ -415,7 +406,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							player.pos = { float(x) * Map_radius,float(y) * Map_radius };
 						}
 						if (map[y][x] == enemyUP || map[y][x] == enemyDOWN || map[y][x] == enemyRIGHT || map[y][x] == enemyLEFT) {
-							for (int i = 0; i < 20; i++) {
+							for (int i = 0; i < kEnemyMax; i++) {
 								if (!enemy[i].isAlive) {
 									enemy[i].radius = 30;
 									enemy[i].pos = { float(x) * Map_radius,float(y) * Map_radius };
@@ -424,6 +415,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 									enemy[i].hp = 1;// enemyHP[i];
 									break;
 								}
+							}
+						}
+						if(map[y][x] == kaiten){
+							woll.pos = { float(x) * Map_radius,float(y) * Map_radius };
+							woll.mapX = x;
+							woll.mapY = y;
+							if(map[y -1][x -1] == naname || map[y -1][x +1] == naname){
+								woll.kn = naname;
+							}
+							if(map[y][x -1] == kabe || map[y -1][x] == kabe){
+								woll.kn = kabe;
 							}
 						}
 					}
@@ -491,6 +493,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					//発射フラグをtrueにする
 					//これで弾が消えるまでプレイヤーを操作できなくなる
 					ball.isShot = true;
+					
 				}
 			}
 
@@ -502,7 +505,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					ball.pos.y += player.direction.y / ruto * ball.velocity.y;
 				}
 			}
-
+			//
+			
 			//玉が上限まで反射したらリセット
 			if (ball.HP <= 0) {
 				stageflag = true;
@@ -581,14 +585,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::ScreenPrintf(0, 120, "PDY %f", player.direction.y);
 			*/
 			//マップチップ(プロトタイプ)
-			for (int i = 0; i < 23; i++) {
-				for (int j = 0; j < 40; j++) {
-					if (map[i][j] == 1) {
+			for (int i = 0; i < Map_H; i++) {
+				for (int j = 0; j < Map_W; j++) {
+					if (map[i][j] == kabe) {
 						Novice::DrawBox(j * Map_radius, i * Map_radius, Map_radius, Map_radius, 0.0f, RED, kFillModeWireFrame);
 					}
-					if (map[i][j] == 2) {
+					if (map[i][j] == naname) {
 						Novice::DrawBox(j * Map_radius, i * Map_radius, Map_radius, Map_radius, 0.0f, BLUE, kFillModeWireFrame);
-					}
+				}
 				}
 			}
 			/*
@@ -617,7 +621,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			*/
 
 			///敵///
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < kEnemyMax; i++) {
 				if (enemy[i].isAlive) {
 					Novice::DrawEllipse(int(enemy[i].pos.x), int(enemy[i].pos.y), int(enemy[i].radius),
 						int(enemy[i].radius), 0.0f, RED, kFillModeSolid);
@@ -636,10 +640,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (enemyDOWN2.isAlive) {
 				Novice::DrawEllipse(int(enemyDOWN2.pos.x), int(enemyDOWN2.pos.y), int(enemyDOWN2.radius),
 					int(enemyDOWN2.radius), 0.0f, RED, kFillModeSolid);
-			}
 
-			//LEFT
-			if (enemyLEFT1.isAlive) {
+　　　　　　if (enemyLEFT1.isAlive) {
 				Novice::DrawEllipse(int(enemyLEFT1.pos.x), int(enemyLEFT1.pos.y), int(enemyLEFT1.radius),
 					int(enemyLEFT1.radius), 0.0f, GREEN, kFillModeSolid);
 			}

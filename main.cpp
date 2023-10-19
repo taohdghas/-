@@ -538,6 +538,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Novice::DrawEllipse(int(ball.pos.x), int(ball.pos.y), int(ball.radius),
 					int(ball.radius), 0.0f, RED, kFillModeSolid);
 			}
+
+			//玉の発射方向を表す矢印
+
+
 			///敵///
 			for (int i = 0; i < 20; i++) {
 				if (enemy[i].isAlive) {
@@ -582,6 +586,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					int(enemyRIGHT2.radius), int(enemyRIGHT2.radius), 0.0f, RED, kFillModeSolid);
 			}*/
 
+            //エフェクト等//
+
 			//UI・HUDなど//
 			//タイトル
 			
@@ -607,6 +613,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if(retry.flag){
 			何かしらの演出をしたうえで描画する
 			}
+
+			//残り玉数
+
+			//残り反射回数
+
+			//ステージ
 			*/
 
 			break;

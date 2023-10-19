@@ -53,11 +53,16 @@ struct Player {
 	Vector2 direction;        //方向
 };
 enum direction {
-	left = 1,
 	up,
-	right
+	upriget,
+	right,
+	downright,
+	down,
+	downleft,
+	left,
+	upleft
 };
-int directionpoint = 2;
+int directionpoint = 0;
 //玉の構造体
 struct Ball {
 	Vector2 pos;              //場所
@@ -398,8 +403,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 				/*玉の発射方向*/
 				//左矢印キーが押されたら左に45度傾く
-				if (keys[DIK_LEFTARROW] && !preKeys[DIK_LEFTARROW] && directionpoint > 1) {
-					directionpoint -= 1;
+				if (keys[DIK_LEFTARROW] && !preKeys[DIK_LEFTARROW]) {
+					if(directionpoint <= 0){
+						directionpoint = 7;
+					}
+					else {
+						directionpoint -= 1;
+					}
 				}
 
 				//右矢印キーが押されたら右に45度傾く
@@ -408,14 +418,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 				switch (directionpoint) {
-				case left:
-					player.direction = { -1,-1 };
-					break;
 				case up:
 					player.direction = { 0,-1 };
 					break;
-				case right:
+				case upriget:
 					player.direction = { 1,-1 };
+					break;
+				case right:
+					player.direction = { 1,0 };
+					break;
+				case downright:
+					player.direction = { 1,1 };
+					break;
+				case down:
+					player.direction = { 0,1 };
+					break;
+				case downleft:
+					player.direction = { -1,1 };
+					break;
+				case left:
+					player.direction = { -1,0 };
+					break;
+				case upleft:
+					player.direction = { -1,-1 };
 					break;
 				}
 
@@ -443,11 +468,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			//玉が上限まで反射したらリセット
-			if (ball.HP == 0) {
+			if (ball.HP <= 0) {
 				stageflag = true;
 			}
 
 			//全ての敵の生存フラグがfalseならステージクリア
+			/*
 			mapenemy = 0;
 			for (int i = 0; i < 20; i++) {
 				if (enemy[i].isAlive) {
@@ -459,7 +485,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					stageflag = true;
 				}
 			}
-			
+			*/
 
 			/*if (stageclear1.flag) {
 			ステージクリアの文字を表示させる

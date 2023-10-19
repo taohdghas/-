@@ -16,17 +16,6 @@ float Normalize(float aPos, float length) //正規化
 float Length(float x, float y) {
 	return sqrtf(x * x + y * y);
 }
-float Clamp(float num, float min, float max) {
-	if (num < min) {
-		return min;
-	}
-	else if (num > max) {
-		return max;
-	}
-	else {
-		return num;
-	}
-}
 void PrintMap(int a, int b, int c, int d, int e, int f, unsigned int g) { //Posx,Posy,Radius,TileNumberW,TileNumberH,gazo,color
 	Novice::DrawQuad(
 		a * c, b * c,
@@ -697,11 +686,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if(retry.flag){
 			何かしらの演出をしたうえで描画する
 			}
-			//残り玉数
+			//残り玉数(文字にするか、スプライトにするか)
 
-			//残り反射回数
+			//反射可能回数(数字で)
 
-			//ステージ
+			//ステージ(何ステージ目か表示)
 
 
 			*/

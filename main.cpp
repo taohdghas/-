@@ -633,7 +633,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//ステージセレクト画面(未定)
 
-			//
 
 			//ステージクリア
 			/*
@@ -657,7 +656,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//ステージ
 
-			//
 
 			*/
 

@@ -517,6 +517,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			//
 			if(woll.isAlive && woll.ct == 0){
+				woll.ct++;
 			     if(woll.kn == kabe){
 					 if(map[woll.mapY -1][woll.mapX] == kabe){
 						 for (int i = -2; i < 3; i++) {
@@ -526,6 +527,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 								 woll.kn = naname;
 							 }
 						 }
+						 break;
 					 }
 					 else if(map[woll.mapY][woll.mapX -1] == kabe){
 						 for (int i = -2; i < 3; i++) {
@@ -535,6 +537,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 								 woll.kn = naname;
 							 }
 						 }
+						 break;
 					 }
 				 }
 				 if (woll.kn == naname) {

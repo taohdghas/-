@@ -455,8 +455,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 
 				//右矢印キーが押されたら右に45度傾く
-				if (keys[DIK_RIGHTARROW] && !preKeys[DIK_RIGHTARROW] && directionpoint < 3) {
-					directionpoint += 1;
+				if (keys[DIK_RIGHTARROW] && !preKeys[DIK_RIGHTARROW]) {
+					if(directionpoint >= 7){
+						directionpoint = 0;
+					}
+					else{
+						directionpoint += 1;
+					}
+					
 				}
 
 				switch (directionpoint) {
@@ -515,14 +521,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					 if(map[woll.mapY -1][woll.mapX] == kabe){
 						 for (int i = -2; i < 3; i++) {
 							 if (i != 0) {
-								 map[woll.mapY - i][woll.mapX - i] = null;
-								 map[woll.mapY - i][woll.mapX] = naname;
+								 map[woll.mapY - i][woll.mapX] = null;
+								 map[woll.mapY + i][woll.mapX - i] = naname;
 								 woll.kn = naname;
 							 }
 						 }
 					 }
 					 else if(map[woll.mapY][woll.mapX -1] == kabe){
-
+						 for (int i = -2; i < 3; i++) {
+							 if (i != 0) {
+								 map[woll.mapY][woll.mapX - i] = null;
+								 map[woll.mapY - i][woll.mapX - i] = naname;
+								 woll.kn = naname;
+							 }
+						 }
 					 }
 				 }
 				 if (woll.kn == naname) {
@@ -553,7 +565,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			//全ての敵の生存フラグがfalseならステージクリア
-			/*
+			
 			mapenemy = 0;
 			for (int i = 0; i < 20; i++) {
 				if (enemy[i].isAlive) {
@@ -565,7 +577,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					stageflag = true;
 				}
 			}
-			*/
+			
 
 			/*if (stageclear1.flag) {
 			ステージクリアの文字を表示させる
@@ -707,7 +719,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//UI・HUDなど//
 			//タイトル
 
-			//説明？
+			//操作・ゲーム説明など(タイトル画面もしくは、ステージセレクト画面から逝けるようにする)
 
 			//ステージセレクト画面(未定)
 

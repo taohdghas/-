@@ -247,6 +247,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE5,
 	};
 	int Stagescene = STAGE1;
+	int stageflag = true;
 	screen screenscene = STAGE; //表示されるシーン
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
@@ -269,16 +270,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			fp = fopen("test1_1.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
+			Stagescene = 0;
 			break;
 		case STAGE2:
 			fp = fopen("test2.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
+			Stagescene = 0;
 			break;
 		case STAGE3:
 			fp = fopen("test3.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
+			Stagescene = 0;
 			break;
 		}
 		//玉と敵の当たり判定
@@ -352,17 +356,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case STAGE:
 			//case SELECT:
 				//break;
-			switch (Stagescene) {
-			case STAGE1:
-			case STAGE2:
-			case STAGE3:
+			switch (stageflag) {
+			case true:
 				//初期化
 				ball.isShot = false;
-				ball.HP = 5; //仮
+				ball.HP = 3; //仮
 				ball.remainingballs = 3;//仮
 				for (int i = 0; i < 20; i++) {
-					enemy[i].isAlive = true;
-					enemy[i].changeblock = true;
+					enemy[i].isAlive = false;
 				}
 				for (int y = 0; y < Map_H; y++) {
 					for (int x = 0; x < Map_W; x++) {
@@ -371,22 +372,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						}
 						if (map[y][x] == enemyUP || map[y][x] == enemyDOWN || map[y][x] == enemyRIGHT || map[y][x] == enemyLEFT) {
 							for (int i = 0; i < 20; i++) {
-								if (enemy[i].isAlive) {
+								if (!enemy[i].isAlive) {
 									enemy[i].radius = 30;
 									enemy[i].pos = { float(x) * Map_radius,float(y) * Map_radius };
-									enemy[i].isAlive = false;
-									enemy[i].changeblock = false;
+									enemy[i].isAlive = true;
 									enemy[i].direction = enemydirection[map[y][x] - 4];
-									enemy[i].hp = 2;
+									enemy[i].hp = 1;
 									break;
 								}
 							}
 						}
 					}
 				}
-				Stagescene = 0;
+				stageflag = false;
 				break;
-			default:
+			case false:
 				break;
 			}
 			//マップチップ(プロト版)
@@ -441,14 +441,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//玉が上限まで反射したらリセット
 			if (ball.HP == 0) {
-				for (int i = 0; i < 20; i++) {
+				/*for (int i = 0; i < 20; i++) {
 					enemy[i].isAlive = true;
 					enemy[i].hp = 2;
 				}
 				ball.isShot = false;
-				ball.HP = 5;
-
-				//Stagescene = Stagenow;
+				ball.HP = 5;*/
+				stageflag = true;
 			}
 
 			//全ての敵の生存フラグがfalseならステージクリア
@@ -458,6 +457,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					break;
 				}
 				//Stagenow++;
+				//Stagescene = Stagenow;
+				//stageflag = true;
 				//stageclear1.flag = true;
 			}
 
@@ -631,6 +632,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//ステージ
 
+			//
 
 			*/
 

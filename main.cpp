@@ -95,6 +95,8 @@ struct Woll {
 	int mapY;
 	int kn;
 	int isAlive;
+	int ct;
+	int fl;
 };
 /*struct Block {
 	Vector2 pos;
@@ -358,15 +360,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 		}
 		else {
-			if (map[ballMapY][mapX] == kabe || map[ballMapY][ballMapX] == kaiten && woll.kn == kabe) {
+			if (map[ballMapY][mapX] == kabe || map[ballMapY][mapX] == kaiten && woll.kn == kabe) {
 				player.direction.y *= -1;
 				ball.HP--;
 			}
-			if (map[mapY][ballMapX] == kabe) {
+			if (map[mapY][ballMapX] == kabe || map[mapY][ballMapX] == kaiten && woll.kn == kabe) {
 				player.direction.x *= -1;
 				ball.HP--;
 			}
-			if (map[mapY][ballMapX] == naname && map[ballMapY][mapX] == naname || map[ballMapY][ballMapX] == naname) {
+			if (map[mapY][ballMapX] == naname && map[ballMapY][mapX] == naname || map[ballMapY][ballMapX] == naname ||
+			    map[mapY][ballMapX] == kaiten && map[ballMapY][mapX] == kaiten && woll.kn == naname || map[ballMapY][ballMapX] == kaiten && woll.kn == naname) {
 				player.direction.x *= -1;
 				player.direction.y *= -1;
 				ball.HP--;
@@ -421,6 +424,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							woll.pos = { float(x) * Map_radius,float(y) * Map_radius };
 							woll.mapX = x;
 							woll.mapY = y;
+							woll.isAlive = true;
 							if(map[y -1][x -1] == naname || map[y -1][x +1] == naname){
 								woll.kn = naname;
 							}
@@ -506,7 +510,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 			//
-			
+			if(woll.isAlive && woll.ct == 0){
+			     if(woll.kn == kabe){
+					 if(map[woll.mapY -1][woll.mapX] == kabe){
+						 for (int i = -2; i < 3; i++) {
+							 if (i != 0) {
+								 map[woll.mapY - i][woll.mapX - i] = null;
+								 map[woll.mapY - i][woll.mapX] = naname;
+								 woll.kn = naname;
+							 }
+						 }
+					 }
+					 else if(map[woll.mapY][woll.mapX -1] == kabe){
+
+					 }
+				 }
+				 if (woll.kn == naname) {
+					 if (map[woll.mapY - 1][woll.mapX -1] == naname) {
+						 for (int i = -2; i < 3;i++) {
+							 if (i != 0) {
+								 map[woll.mapY - i][woll.mapX - i] = null;
+								 map[woll.mapY - i][woll.mapX] = kabe;
+								 woll.kn = kabe;
+							 }
+						 }
+					 }
+					 else if(map[woll.mapY - 1][woll.mapX +1] == naname){
+						 for (int i = -2; i < 3; i++) {
+							 if (i != 0) {
+								 map[woll.mapY + i][woll.mapX - i] = null;
+								 map[woll.mapY][woll.mapX - i] = kabe;
+								 woll.kn = kabe;
+							 }
+						 }
+					 }
+				 }
+			}
+			woll.ct = CTcount(woll.ct, 120);
 			//玉が上限まで反射したらリセット
 			if (ball.HP <= 0) {
 				stageflag = true;

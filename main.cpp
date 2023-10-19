@@ -126,6 +126,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	const int Map_H = 23;
 	int Map_radius = 32;
 	int map[Map_H][Map_W];
+	int enemyHP[20] = { 0 };
 	int ballMapX = 0;
 	int	ballMapY = 0;
 	int	mapX = 0;
@@ -247,6 +248,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE5,
 	};
 	int Stagescene = STAGE1;
+	int Stagenow = STAGE1;
 	int stageflag = true;
 	screen screenscene = STAGE; //表示されるシーン
 	// キー入力結果を受け取る箱
@@ -265,6 +267,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 
 		//ステージの読み込み(仮)
+		
 		switch (Stagescene) {
 		case STAGE1:
 			fp = fopen("test1_1.txt", "r");
@@ -291,7 +294,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Hitballenemy(ball, enemy[i], player.direction);
 			}
 			else {
-				enemy[i].count = CTcount(enemy[i].count, 2);
+				enemy[i].count = CTcount(enemy[i].count, 60);
 			}
 		}
 
@@ -377,7 +380,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 									enemy[i].pos = { float(x) * Map_radius,float(y) * Map_radius };
 									enemy[i].isAlive = true;
 									enemy[i].direction = enemydirection[map[y][x] - 4];
-									enemy[i].hp = 1;
+									enemy[i].hp = 1;// enemyHP[i];
 									break;
 								}
 							}
@@ -441,12 +444,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//玉が上限まで反射したらリセット
 			if (ball.HP == 0) {
-				/*for (int i = 0; i < 20; i++) {
-					enemy[i].isAlive = true;
-					enemy[i].hp = 2;
-				}
-				ball.isShot = false;
-				ball.HP = 5;*/
 				stageflag = true;
 			}
 
@@ -456,11 +453,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				if (enemy[i].isAlive) {
 					break;
 				}
-				//Stagenow++;
-				//Stagescene = Stagenow;
-				//stageflag = true;
-				//stageclear1.flag = true;
+				if (i == 19) {
+					Stagenow++;
+					Stagescene = Stagenow;
+					stageflag = true;
+				}
 			}
+			
 
 			/*if (stageclear1.flag) {
 			ステージクリアの文字を表示させる
@@ -533,7 +532,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			/*
 			for(int y = 0;y < Map_H;y++){
 			for(int x = 0;x < Map_W;x++){
-			PrintMap(x,y,Map_rad,TileNum.W,TileNum.H,gazou,color);
+			PrintMap(x,y,Map_rad,Map[y][x],0,mapgazo,color);
 			}
 			}
 			*/

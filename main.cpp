@@ -104,13 +104,14 @@ struct Retry {
 };
 void Hitballenemy(Ball ball, Enemy& enemy,Vector2& direction) {
 	float distance = Length(ball.pos.x - enemy.pos.x, ball.pos.y - enemy.pos.y);
+	Vector2 enemydirection = enemy.direction;
 	if (distance <= Length(ball.radius, enemy.radius) && enemy.isAlive) {
 		enemy.hp--;
 		if (enemy.hp == 0) {
 			enemy.isAlive = false;
 		}
 		else {
-
+			enemy.direction = { enemydirection.y,enemydirection.x * -1};
 		}
 		//矢印の方向へ行く
 		direction = { enemy.direction.x,enemy.direction.y };
@@ -133,11 +134,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int enemyhp[20] = { 0 };
 	FILE* fp;
 	enum MapNumber {
-		null,
-		kabe,
-		naname,
-		enemynum,
-		playernum
+		null,//0
+		kabe,//1
+		naname,//2
+		playernum,//3
+		enemyUP,//4
+		enemyDOWN,//5
+		enemyRIGHT,//6
+		enemyLEFT//7
+	};
+	Vector2 enemydirection[4]{
+		{0,-1},
+		{0,1},
+		{1,0},
+		{-1,0}
 	};
 	/*int blockHandle[];
 	blockHandle[0] = Novice::LoadTexture("./block1.png");
@@ -176,59 +186,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int ballMapNum = 0;
 	//敵(1ステージに同じ方向が複数あるステージがあるかもなので数字を付けて差別化)
 	Enemy enemy[20]{0};
-	
-	/*Enemy enemyUP2{
-		{1000,1000},      //場所
-		30,         //大きさ
-		false,          //生存フラグ
-		false,          //ブロックの切り替えフラグ
-		{0,-1}
-	};
-
-	Enemy enemyDOWN1{
-		{1000,1000},      //場所
-		30,         //大きさ
-		false,          //生存フラグ
-		false,          //ブロックの切り替えフラグ
-		{0,1}
-	};
-
-	Enemy enemyDOWN2{
-		{0,0},
-		30,
-		false,
-		false,
-		{0,1}
-	};
-	Enemy enemyLEFT1{
-		{1000,1000},      //場所
-		30,         //大きさ
-		false,          //生存フラグ
-		false,          //ブロックの切り替えフラグ
-		{-1,0}
-	};
-
-	Enemy enemyLEFT2{
-		{0,0},
-		30,
-		false,
-		false,
-		{-1,0}
-	};
-	Enemy enemyRIGHT1{
-		{1000,1000},      //場所
-		30,         //大きさ
-		false,          //生存フラグ
-		false,          //ブロックの切り替えフラグ
-		{1,0}
-	};
-	Enemy enemyRIGHT2{
-		{0,0},
-		30,
-		false,
-		false,
-		{1,0}
-	};
 	/*Block block1{
 		{0,0},
 		{0,0},
@@ -311,7 +268,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		//ステージの読み込み(仮)
 		switch (Stagescene) {
 		case STAGE1:
-			fp = fopen("test1.txt", "r"); //test,test_ver1.1
+			fp = fopen("test1_1.txt", "r");
 			for (int i = 0; i < 23; i++)for (int j = 0; j < 40; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
 			break;
@@ -330,36 +287,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		for (int i = 0; i < 20; i++) {
 			Hitballenemy(ball, enemy[i], player.direction);
 		}
-		/*float distance1 = Length(ball.pos.x - enemyUP1.pos.x, ball.pos.y - enemyUP1.pos.y);
-		if (distance1 <= 31.0f && enemyUP1.isAlive) {
-			enemyUP1.isAlive = false;
-			//矢印の方向へ行く
-			player.direction = { enemyUP1.direction.x,enemyUP1.direction.y };
-		}
-		float distance1_2 = Length(ball.pos.x - enemyUP2.pos.x, ball.pos.y - enemyUP2.pos.y);
-		if (distance1_2 <= 31.0f && enemyUP2.isAlive) {
-			enemyUP2.isAlive = false;
-			//矢印の方向へ行く
-			player.direction = { enemyUP2.direction.x,enemyUP2.direction.y };
-		}
-		float distance2 = Length(ball.pos.x - enemyDOWN1.pos.x, ball.pos.y - enemyDOWN1.pos.y);
-		if (distance2 <= 31.0f && enemyDOWN1.isAlive) {
-			enemyDOWN1.isAlive = false;
-			//矢印の方向へ行く
-			player.direction = { enemyDOWN1.direction.x,enemyDOWN1.direction.y };
-		}
-		float distance3 = Length(ball.pos.x - enemyLEFT1.pos.x, ball.pos.y - enemyLEFT1.pos.y);
-		if (distance3 <= 31.0f && enemyLEFT1.isAlive) {
-			enemyLEFT1.isAlive = false;
-			//矢印の方向へ行く
-			player.direction = { enemyLEFT1.direction.x,enemyLEFT1.direction.y };
-		}
-		float distance4 = Length(ball.pos.x - enemyRIGHT1.pos.x, ball.pos.y - enemyRIGHT1.pos.y);
-		if (distance4 <= 31.0f && enemyRIGHT1.isAlive) {
-			enemyRIGHT1.isAlive = false;
-			//矢印の方向へ行く
-			player.direction = { enemyRIGHT1.direction.x,enemyRIGHT1.direction.y };
-		}*/
 
 		//マップチップの当たり判定
 		ballMapX = int(ball.pos.x  / Map_radius + player.direction.x);
@@ -424,7 +351,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//break;
 			switch (Stagescene) {
 			case STAGE1:
-
 			case STAGE2:
 			case STAGE3:
 				//初期化
@@ -439,14 +365,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						if(map[y][x] == playernum){
 							player.pos = { float(x) * Map_radius,float(y) * Map_radius };
 						}
-						for (int i = 0; i < 20; i++) {
-							if (map[y][x] == enemynum && enemy[i].isAlive == true) {
-								enemy[i].radius = 30;
-								enemy[i].pos = { float(x) * Map_radius,float(y) * Map_radius };
-								enemy[i].isAlive = false;
-								enemy[i].changeblock = false;
-								enemy[i].direction = { 0,-1 };
-								break;
+						if (map[y][x] == enemyUP || map[y][x] == enemyDOWN || map[y][x] == enemyRIGHT || map[y][x] == enemyLEFT) {
+							for (int i = 0; i < 20; i++) {
+								if (enemy[i].isAlive == true) {
+									enemy[i].radius = 30;
+									enemy[i].pos = { float(x) * Map_radius,float(y) * Map_radius };
+									enemy[i].isAlive = false;
+									enemy[i].changeblock = false;
+									enemy[i].direction = enemydirection[map[y][x] - 4];
+									enemy[i].hp = 1;
+									break;
+								}
 							}
 						}
 					}
@@ -518,7 +447,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//全ての敵の生存フラグがfalseならステージクリア
 			mapenemy = 0;
 			for(int i = 0;i < 20;i++){
-				if (enemy[i].isAlive == 1) {
+				if (enemy[i].isAlive == true) {
 					break;
 				}
 				//stageclear1.flag = true;

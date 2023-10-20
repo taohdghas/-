@@ -251,7 +251,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 	Retry retry{
 		{0,0},
-		true
+		false,
 	};
 	// 画面変化
 	enum screen {
@@ -599,23 +599,23 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			}*/
 			//もし玉を全て打ち切ってしまったらリトライ
-			/*
+			
 			if (ball.remainingballs == 0) {
 				retry.flag = true;
 			}
-			*/
-			/*
-			if(retry.flag){
-			//リトライの文字が出る
-			//spaceキーを押してリトライするか、長押しでタイトルに戻る(未定)
-			if(keys[DIK_SPACE] && keys[DIK_SPACE]) == 0{
-			//ステージの状況をリセット
+			
+			
+			if (retry.flag) {
+				//リトライの文字が出る
+				//spaceキーを押してリトライするか、長押しでタイトルに戻る(未定)
+				if (keys[DIK_SPACE] && keys[DIK_SPACE] == 0) {
+					//ステージの状況をリセット
+				}
+				if (keys[DIK_SPACE]) {
+					screenscene = TITLE;
+				}
 			}
-			if(keys[DIK_SPACE]){
-			screenscene = TITLE;
-			 }
-			}
-			*/
+			
 			break;
 		case CLEAR:
 			break;

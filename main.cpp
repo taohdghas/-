@@ -338,25 +338,51 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		mapX = int(ball.pos.x / Map_radius);
 		mapY = int(ball.pos.y / Map_radius);
 		if (player.direction.x == 0.0f) {
-			if (map[ballMapY][ballMapX] == kabe || map[ballMapY][ballMapX] == kaiten && woll.kn == kabe) {
+			if (map[ballMapY][mapX] == kabe || map[ballMapY][mapX] == kaiten && woll.kn == kabe) {
 				player.direction.y *= -1;
 				ball.HP--;
 			}
-			if (map[ballMapY][ballMapX] == naname || map[ballMapY][ballMapX] == kaiten && woll.kn == naname) {
-				player.direction.x = player.direction.y * -1;
-				player.direction.y = 0;
-				ball.HP--;
+			if (map[ballMapY][mapX] == naname || map[ballMapY][mapX] == kaiten && woll.kn == naname) {
+				if(map[mapY][mapX + 1] == naname){
+					player.direction.x = player.direction.y * -1;
+					if(player.direction.y < 0){
+						player.direction.x *= -1;
+					}
+					player.direction.y = 0;
+					ball.HP--;
+				}
+				else if(map[mapY][mapX -1] == naname){
+					player.direction.x = player.direction.y;
+					if (player.direction.y < 0) {
+						player.direction.x *= -1;
+					}
+					player.direction.y = 0;
+					ball.HP--;
+				}
 			}
 		}
 		else if (player.direction.y == 0.0f) {
-			if (map[ballMapY][ballMapX] == kabe || map[ballMapY][ballMapX] == kaiten && woll.kn == kabe) {
+			if (map[mapY][ballMapX] == kabe || map[mapY][ballMapX] == kaiten && woll.kn == kabe) {
 				player.direction.x *= -1;
 				ball.HP--;
 			}
-			if (map[ballMapY][ballMapX] == naname || map[ballMapY][ballMapX] == kaiten && woll.kn == naname) {
-				player.direction.y = player.direction.x * -1;
-				player.direction.x = 0;
-				ball.HP--;
+			if (map[mapY][ballMapX] == naname || map[mapY][ballMapX] == kaiten && woll.kn == naname) {
+				if (map[mapY + 1][mapX] == naname) {
+					player.direction.y = player.direction.x * -1;
+					if(player.direction.x < 0){
+						player.direction.y *= -1;
+					}
+					player.direction.x = 0;
+					ball.HP--;
+				}
+				else if (map[mapY - 1][mapX] = naname) {
+					player.direction.y = player.direction.x;
+					if (player.direction.x < 0) {
+						player.direction.y *= -1;
+					}
+					player.direction.x = 0;
+					ball.HP--;
+				}
 			}
 		}
 		else {
@@ -610,8 +636,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				//spaceキーを押してリトライするか、長押しでタイトルに戻る(未定)
 				if (keys[DIK_SPACE] && keys[DIK_SPACE] == 0) {
 					//ステージの状況をリセット
-				}
-				if (keys[DIK_SPACE]) {
+				
+					}
+				else if (keys[DIK_SPACE]) {
 					screenscene = TITLE;
 				}
 			}

@@ -132,7 +132,15 @@ void Hitballenemy(Ball ball, Enemy& enemy, Vector2& direction) {
 			enemy.isAlive = false;
 		}
 		else {
-			enemy.direction = { enemydirection.y * -1,enemydirection.x };
+			if (enemydirection.y == 0 || enemydirection.x == 0) {
+				enemy.direction = { enemydirection.y * -1,enemydirection.x };
+			}
+			else if(enemydirection.y < 0 && enemydirection.x < 0 || enemydirection.y > 0 && enemydirection.x > 0){
+				enemy.direction.x = enemydirection.x * -1;
+			}
+			else{
+				enemy.direction.y = enemydirection.y * -1;
+			}
 		}
 	}
 }
@@ -414,6 +422,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					for (int x = 0; x < Map_W; x++) {
 						if (map[y][x] == playernum) {
 							player.pos = { float(x) * Map_radius,float(y) * Map_radius };
+							ball.pos = { player.pos.x,player.pos.y };
 						}
 						if (map[y][x] == enemyUP || map[y][x] == enemyDOWN || map[y][x] == enemyRIGHT || map[y][x] == enemyLEFT ||
 						    map[y][x] == enemyRIGHTup || map[y][x] == enemyRIGHTdown || map[y][x] == enemyLEFTup|| map[y][x] == enemyLEFTdown) {

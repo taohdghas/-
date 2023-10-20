@@ -332,7 +332,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				ball.HP--;
 			}
 			if (map[ballMapY][mapX] == naname || map[ballMapY][mapX] == kaiten && woll.kn == naname) {
-				if (map[mapY][mapX + 1] == naname) {
+				if (map[mapY][mapX + 1] == naname || map[mapY][mapX + 1] == kaiten) {
 					player.direction.x = player.direction.y * -1;
 					if (player.direction.y < 0) {
 						player.direction.x *= -1;
@@ -340,7 +340,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					player.direction.y = 0;
 					ball.HP--;
 				}
-				else if (map[mapY][mapX - 1] == naname) {
+				else if (map[mapY][mapX - 1] == naname || map[mapY][mapX - 1] == kaiten) {
 					player.direction.x = player.direction.y;
 					if (player.direction.y < 0) {
 						player.direction.x *= -1;
@@ -356,7 +356,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				ball.HP--;
 			}
 			if (map[mapY][ballMapX] == naname || map[mapY][ballMapX] == kaiten && woll.kn == naname) {
-				if (map[mapY + 1][mapX] == naname) {
+				if (map[mapY + 1][mapX] == naname || map[mapY +1][mapX] == kaiten) {
 					player.direction.y = player.direction.x * -1;
 					if (player.direction.x < 0) {
 						player.direction.y *= -1;
@@ -364,7 +364,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					player.direction.x = 0;
 					ball.HP--;
 				}
-				else if (map[mapY - 1][mapX] = naname) {
+				else if (map[mapY - 1][mapX] == naname || map[mapY -1][mapX] == kaiten) {
 					player.direction.y = player.direction.x;
 					if (player.direction.x < 0) {
 						player.direction.y *= -1;
@@ -421,7 +421,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				for (int y = 0; y < Map_H; y++) {
 					for (int x = 0; x < Map_W; x++) {
 						if (map[y][x] == playernum) {
-							player.pos = { float(x) * Map_radius,float(y) * Map_radius };
+							player.pos = { float(x) * Map_radius + player.radius,float(y) * Map_radius +player.radius};
 							ball.pos = { player.pos.x,player.pos.y };
 						}
 						if (map[y][x] == enemyUP || map[y][x] == enemyDOWN || map[y][x] == enemyRIGHT || map[y][x] == enemyLEFT ||
@@ -429,7 +429,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							for (int i = 0; i < kEnemyMax; i++) {
 								if (!enemy[i].isAlive) {
 									enemy[i].radius = 30;
-									enemy[i].pos = { float(x) * Map_radius,float(y) * Map_radius };
+									enemy[i].pos = { float(x) * Map_radius + enemy[i].radius,float(y) * Map_radius + enemy[i].radius };
 									enemy[i].isAlive = true;
 									enemy[i].direction = enemydirection[map[y][x] - 4];
 									enemy[i].hp = 1;// enemyHP[i];
@@ -624,6 +624,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (retry.flag) {
 				//リトライの文字が出る
+				//Novice::DrawSprite();
 				//spaceキーを押してリトライするか、長押しでタイトルに戻る(未定)
 				if (keys[DIK_SPACE] && keys[DIK_SPACE] == 0) {
 					//ステージの状況をリセット

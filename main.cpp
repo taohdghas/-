@@ -200,6 +200,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::LoadAudio("./resource/sound/ritry.mp3"),
 	Novice::LoadAudio("./resource/sound/hazikedama.mp3"),
 	};
+
+	int voiceHandle[5] = { 0 };
+	voiceHandle[0] = -1;
+	voiceHandle[1] = -1;
+	voiceHandle[2] = -1;
+	voiceHandle[3] = -1;
+	voiceHandle[4] = -1;
 	*/
 	
 	///マップデータ///
@@ -232,8 +239,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		3,                                //玉を撃てる回数
 	};
 	//敵(1ステージに同じ方向が複数あるステージがあるかもなので数字を付けて差別化)
-	Enemy enemy[20]{ 0 };
-	int enemyhp[20] = { 0 };
+	Enemy enemy[kEnemyMax]{ 0 };
+	int enemyhp[kEnemyMax] = { 0 };
 	//回転する壁
 	Woll woll{
 		{0,0},
@@ -267,6 +274,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE3,
 		STAGE4,
 		STAGE5,
+		STAGE6,
+		STAGE7,
+		STAGE8,
+		STAGE9,
+		STAGE10,
 	};
 	int Stagescene = STAGE1;
 	int Stagenow = STAGE1;
@@ -294,11 +306,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			/*fp = fopen("test1_1.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);*/
-			fp = fopen("st1.txt", "r");
+			fp = fopen("map/st1.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
 			fpEnemy = fopen("st1_EnemyHp.txt", "r");
-		    for (int i = 0; i < 20; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+		    for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
@@ -306,24 +318,81 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			fp = fopen("test2.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
+			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE3:
 			fp = fopen("test3.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
+			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE4:
 			fp = fopen("test4.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
+			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE5:
 			fp = fopen("test5.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
+			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
+			Stagescene = 0;
+			break;
+		case STAGE6:
+			fp = fopen("st6.txt", "r");
+			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			fpEnemy = fopen("st6_EnemyHp.txt", "r");
+			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
+			Stagescene = 0;
+			break;
+		case STAGE7:
+			fp = fopen("st7.txt", "r");
+			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			fpEnemy = fopen("st7_EnemyHp.txt", "r");
+			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
+			Stagescene = 0;
+			break;
+		case STAGE8:
+			fp = fopen("st8.txt", "r");
+			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			fpEnemy = fopen("st8_EnemyHp.txt", "r");
+			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
+			Stagescene = 0;
+			break;
+		case STAGE9:
+			fp = fopen("st9.txt", "r");
+			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			fpEnemy = fopen("st9_EnemyHp.txt", "r");
+			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
+			Stagescene = 0;
+			break;
+		case STAGE10:
+			fp = fopen("st10.txt", "r");
+			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			fpEnemy = fopen("st10_EnemyHp.txt", "r");
+			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		}
@@ -665,6 +734,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		switch (screenscene) {
 		case TITLE:
+			//サウンド
+			/*
+			Novice::StopAudio(voiceHandle[0]);
+			Novice::StopAudio(voiceHandle[1]);
+			Novice::StopAudio(voiceHandle[2]);
+			Novice::StopAudio(voiceHandle[3]);
+
+			if(Novice::IsPlayingAudio(voiceHandle[4]) == 0 || voiceHandle[4] == -1){
+			voiceHandle[4] = Novice::PlayAudio(soundHandle[0],true,0.01f);
+			}
+			*/
 			break;
 		case STAGE:
 			/*
@@ -675,6 +755,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::ScreenPrintf(0, 100, "PDX %f", player.direction.x);
 			Novice::ScreenPrintf(0, 120, "PDY %f", player.direction.y);
 			*/
+			//サウンド
+			/*
+			if(Novice::IsPlayingAudio(voiceHandle[4]) == 0 || voiceHandle[4] == -1){
+			voiceHandle[4] = Novice::PlayAudio(soundHandle[4],true,0.01f);
+			}
+			*/
+			
+			
 			//マップチップ(プロトタイプ)
 			for (int i = 0; i < Map_H; i++) {
 				for (int j = 0; j < Map_W; j++) {
@@ -702,6 +790,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (ball.isShot) {
 				Novice::DrawEllipse(int(ball.pos.x), int(ball.pos.y), int(ball.radius),
 					int(ball.radius), 0.0f, RED, kFillModeSolid);
+				/*
+				if(keys[DIK_SPACE]){
+
+				*/
 			}
 
 			//玉の発射方向を表す矢印

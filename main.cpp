@@ -208,6 +208,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	voiceHandle[2] = -1;
 	voiceHandle[3] = -1;
 	voiceHandle[4] = -1;
+
+	int hannsyaflag = false;
 	*/
 	
 	///マップデータ///
@@ -281,7 +283,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE9,
 		STAGE10,
 	};
-	int Stagescene = STAGE1;
+	int Stagescene = STAGE;
 	int Stagenow = STAGE1;
 	int stageflag = true;
 	screen screenscene = STAGE; //表示されるシーン
@@ -304,10 +306,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		switch (Stagescene) {
 		case STAGE1:
-			/*fp = fopen("test1_1.txt", "r");
-			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
-			fclose(fp);*/
-			fp = fopen("map/test1.txt", "r");
+			fp = fopen("map/test1_1.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
 			fpEnemy = fopen("map/st1_EnemyHp.txt", "r");
@@ -343,7 +342,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Stagescene = 0;
 			break;
 		case STAGE5:
-			fp = fopen("map/test6.txt", "r");
+			fp = fopen("map/st6.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
 			fpEnemy = fopen("map/st6_EnemyHp.txt", "r");
@@ -517,6 +516,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						if (map[y][x] == playernum) {
 							player.pos = { float(x) * Map_radius + player.radius,float(y) * Map_radius +player.radius};
 							ball.pos = { player.pos.x,player.pos.y };
+							directionpoint = 0;
 						}
 						if (map[y][x] == enemyUP || map[y][x] == enemyDOWN || map[y][x] == enemyRIGHT || map[y][x] == enemyLEFT ||
 						    map[y][x] == enemyRIGHTup || map[y][x] == enemyRIGHTdown || map[y][x] == enemyLEFTup|| map[y][x] == enemyLEFTdown) {

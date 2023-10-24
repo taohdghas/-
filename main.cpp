@@ -283,7 +283,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE9,
 		STAGE10,
 	};
-	int Stagescene = STAGE;
+	int Stagescene = STAGE10;
 	int Stagenow = STAGE1;
 	int stageflag = true;
 	screen screenscene = STAGE; //表示されるシーン

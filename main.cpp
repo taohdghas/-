@@ -160,7 +160,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int	mapX = 0;
 	int	mapY = 0;
 	int mapenemy = 0;
-	FILE* fp;
+	FILE* fp, *fpEnemy;
 	enum MapNumber {
 		null,//0
 		kabe,//1
@@ -181,10 +181,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		{0,1},//下
 		{1,0},//右
 		{-1,0},//左
-		{-1,-1},//右上
-		{-1,1},//右下
-		{1,-1},//左上
-		{1,1}//左下
+		{1,-1},//右上
+		{1,1},//右下
+		{-1,-1},//左上
+		{-1,1}//左下
 	};
 	/*int blockHandle[];
 	blockHandle[0] = Novice::LoadTexture("./block1.png");
@@ -286,9 +286,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			fp = fopen("st1.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fp = fopen("st_EnemyHp.txt", "r");
-		    for (int i = 0; i < 20; i++)fscanf(fp, "%d", &enemyhp[i]);
-			fclose(fp);
+			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+		    for (int i = 0; i < 20; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
+			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE2:
@@ -322,7 +322,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				Hitballenemy(ball, enemy[i], player.direction);
 			}
 			else {
-				enemy[i].count = CTcount(enemy[i].count, 60);
+				enemy[i].count = CTcount(enemy[i].count, 10);
 			}
 		}
 		//回転当たり判定
@@ -438,7 +438,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 									enemy[i].pos = { float(x) * Map_radius + enemy[i].radius,float(y) * Map_radius + enemy[i].radius };
 									enemy[i].isAlive = true;
 									enemy[i].direction = enemydirection[map[y][x] - 4];
-									enemy[i].hp = 1;//enemyhp[i];
+									enemy[i].hp = enemyhp[i];
 									break;
 								}
 							}

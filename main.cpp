@@ -222,7 +222,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	};
 	//敵(1ステージに同じ方向が複数あるステージがあるかもなので数字を付けて差別化)
 	Enemy enemy[20]{ 0 };
-
+	int enemyhp[20] = { 0 };
 	//回転する壁
 	Woll woll{
 		{0,0},
@@ -280,8 +280,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		switch (Stagescene) {
 		case STAGE1:
-			fp = fopen("test1_1.txt", "r");
+			/*fp = fopen("test1_1.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);*/
+			fp = fopen("st1.txt", "r");
+			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
+			fclose(fp);
+			fp = fopen("st_EnemyHp.txt", "r");
+		    for (int i = 0; i < 20; i++)fscanf(fp, "%d", &enemyhp[i]);
 			fclose(fp);
 			Stagescene = 0;
 			break;
@@ -432,7 +438,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 									enemy[i].pos = { float(x) * Map_radius + enemy[i].radius,float(y) * Map_radius + enemy[i].radius };
 									enemy[i].isAlive = true;
 									enemy[i].direction = enemydirection[map[y][x] - 4];
-									enemy[i].hp = 1;// enemyHP[i];
+									enemy[i].hp = 1;//enemyhp[i];
 									break;
 								}
 							}

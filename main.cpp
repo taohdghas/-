@@ -283,7 +283,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE9,
 		STAGE10,
 	};
-	int Stagescene = STAGE10;
+	int Stagescene = STAGE9;
 	int Stagenow = STAGE1;
 	int stageflag = true;
 	screen screenscene = STAGE; //表示されるシーン
@@ -514,7 +514,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				for (int y = 0; y < Map_H; y++) {
 					for (int x = 0; x < Map_W; x++) {
 						if (map[y][x] == playernum) {
-							player.pos = { float(x) * Map_radius + player.radius,float(y) * Map_radius +player.radius};
+							player.pos = { float(x) * Map_radius + (Map_radius / 2),float(y) * Map_radius + (Map_radius / 2) };
 							ball.pos = { player.pos.x,player.pos.y };
 							directionpoint = 0;
 						}
@@ -523,7 +523,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 							for (int i = 0; i < kEnemyMax; i++) {
 								if (!enemy[i].isAlive) {
 									enemy[i].radius = 30;
-									enemy[i].pos = { float(x) * Map_radius + enemy[i].radius,float(y) * Map_radius + enemy[i].radius };
+									enemy[i].pos = { float(x) * Map_radius + (Map_radius / 2),float(y) * Map_radius + (Map_radius / 2) };
 									enemy[i].isAlive = true;
 									enemy[i].direction = enemydirection[map[y][x] - 4];
 									enemy[i].hp = enemyhp[i];
@@ -691,7 +691,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					stageflag = true;
 				}
 			}
-
 
 			/*if (stageclear1.flag) {
 			ステージクリアの文字を表示させる

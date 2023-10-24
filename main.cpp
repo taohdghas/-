@@ -87,6 +87,7 @@ struct Enemy {
 	Vector2 direction;         //あげる方向
 	int hp;
 	int count;
+	unsigned int color;
 };
 //回転する壁 (現段階では実装不可能？
 struct Woll {
@@ -306,91 +307,91 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			/*fp = fopen("test1_1.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);*/
-			fp = fopen("map/st1.txt", "r");
+			fp = fopen("map/test1.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st1_EnemyHp.txt", "r");
 		    for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE2:
-			fp = fopen("test2.txt", "r");
+			fp = fopen("map/test2.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st2_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE3:
-			fp = fopen("test3.txt", "r");
+			fp = fopen("map/test3.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st3_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE4:
-			fp = fopen("test4.txt", "r");
+			fp = fopen("map/test4.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st4_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE5:
-			fp = fopen("test5.txt", "r");
+			fp = fopen("map/test6.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st1_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st6_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE6:
-			fp = fopen("st6.txt", "r");
+			fp = fopen("map/st6.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st6_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st6_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE7:
-			fp = fopen("st7.txt", "r");
+			fp = fopen("map/st7.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st7_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st7_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE8:
-			fp = fopen("st8.txt", "r");
+			fp = fopen("map/st8.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st8_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st8_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE9:
-			fp = fopen("st9.txt", "r");
+			fp = fopen("map/st9.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st9_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st9_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
 			break;
 		case STAGE10:
-			fp = fopen("st10.txt", "r");
+			fp = fopen("map/st10.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("st10_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st10_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
@@ -404,7 +405,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			else {
 				enemy[i].count = CTcount(enemy[i].count, 10);
 			}
+			if (enemy[i].hp == 1) {
+				enemy[i].color = 0xff0000ff;
+			}
+			if (enemy[i].hp == 2) {
+				enemy[i].color = 0x00ff00ff;
+			}
 		}
+	
 		//回転当たり判定
 
 		//マップチップの当たり判定
@@ -792,7 +800,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					int(ball.radius), 0.0f, RED, kFillModeSolid);
 				/*
 				if(keys[DIK_SPACE]){
-
+				if(Novice::IsPlayingAudio(voiceHandle[]) == 0 || voiceHandle[] == -1){
+				  voiceHandle[] = Novice::PlayAudio(soundHandle[],false,0,5f);			
+				  }
+				}
 				*/
 			}
 
@@ -807,7 +818,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			for (int i = 0; i < kEnemyMax; i++) {
 				if (enemy[i].isAlive) {
 					Novice::DrawEllipse(int(enemy[i].pos.x), int(enemy[i].pos.y), int(enemy[i].radius),
-						int(enemy[i].radius), 0.0f, RED, kFillModeSolid);
+						int(enemy[i].radius), 0.0f, enemy[i].color, kFillModeSolid);
 				}
 			}
 			

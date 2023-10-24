@@ -191,6 +191,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	blockHandle[1] = Novice::LoadTexture("./block2.png");
 	……
 	*/
+	//サウンド
+	/*
+	const int soundHandle[5] = {
+	Novice::LoadAudio("./resource/sound/clear.mp3"),
+	Novice::LoadAudio("./resource/sound/gekiha.mp3"),
+	Novice::LoadAudio("./resource/sound/hannsya.mp3"),
+	Novice::LoadAudio("./resource/sound/ritry.mp3"),
+	Novice::LoadAudio("./resource/sound/hazikedama.mp3"),
+	};
+	*/
+	
 	///マップデータ///
 	//ステージ1
 	/*int stage1[][]={};*/

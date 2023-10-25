@@ -232,10 +232,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     
 	const int titleHandle =
 	Novice::LoadTexture("./resource/textrue/title.png");
-	const int tutorialHandle =
-		Novice::LoadTexture("./resource/textrue/tutorial.png");
+	const int tutorialHandle1 =
+		Novice::LoadTexture("./resource/textrue/tutorial1.png");
+	const int tutorialHandle2 =
+		Novice::LoadTexture("./resource/textrue/tutorial2.png");
 	const int stageclearimag =
 		Novice::LoadTexture("./resource/textrue/stageclear.png");
+	const int pushspaceimag =
+		Novice::LoadTexture("./resource/textrue/pushspace.png");
 	const int playerimag =
 		Novice::LoadTexture("./resource/textrue/player.png");
 	const int backgroundHandle =
@@ -321,7 +325,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 画面変化
 	enum screen {
 		TITLE,  //タイトル
-		TUTORIAL,
+		TUTORIAL1,
+		TUTORIAL2,
 		//SELECT ステージセレクト(未定)
 		STAGE,   //ステージ
 		CLEAR,   //クリア画面
@@ -339,7 +344,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE9,
 		STAGE10,
 	};
-	int Stagescene = STAGE;
+	int Stagescene = STAGE1;
 	int Stagenow = STAGE1;
 	int stageflag = true;
 	int stageclearflag = false;
@@ -558,25 +563,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case TITLE:
 			gameclearflag = false;
 			//spaceキー長押しで説明画面に移行(未定)
-			if (keys[DIK_SPACE])
+			//if (keys[DIK_SPACE])
 				//spaceキー押されたらステージ画面へ移行
-				if (keys[DIK_SPACE]) {
-					screenscene = TUTORIAL;
+				if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+					screenscene = TUTORIAL1;
 
 				}
 			break;
-		case TUTORIAL:
-			if (keys[DIK_SPACE])
-				//spaceキー押されたらセレクト画面に移行(未定)
+		case TUTORIAL1:
+			//spaceキー押されたらセレクト画面に移行(未定)
 				/*if (keys[DIK_SPACE]) {
 				   screenscene = SELECT;
 				};
 				*/
 				//spaceキー押されたらステージ画面へ移行
-				if (keys[DIK_SPACE]) {
-					screenscene = STAGE;
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				screenscene = TUTORIAL2;
 
-				}
+			}
+			break;
+		case TUTORIAL2:
+			//spaceキー押されたらセレクト画面に移行(未定)
+				/*if (keys[DIK_SPACE]) {
+				   screenscene = SELECT;
+				};
+				*/
+				//spaceキー押されたらステージ画面へ移行
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				screenscene = STAGE;
+			}
 			break;
 		case STAGE:
 			//case SELECT:
@@ -776,6 +791,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					Stagenow++;
 					Stagescene = Stagenow;
 					stageflag = true;
+					stageclearflag = false;
 					//stage10クリア
 					if (Stagescene == 11) {
 						gameclearflag = true;
@@ -845,8 +861,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			*/
 			break;
-		case TUTORIAL:
-			Novice::DrawSprite(0, 0, tutorialHandle, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+		case TUTORIAL1:
+			Novice::DrawSprite(0, 0, tutorialHandle1, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+			break;
+		case TUTORIAL2:
+			Novice::DrawSprite(0, 0, tutorialHandle2, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 			break;
 		case STAGE:
 			/*
@@ -914,6 +933,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//エフェクト等//
 			if (stageclearflag) {
 				Novice::DrawSprite(0, 0, stageclearimag, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+				Novice::DrawSprite(0, 0, pushspaceimag, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 			}
 			//UI・HUDなど//
 			//タイトル

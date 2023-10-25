@@ -250,9 +250,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		Novice::LoadTexture("./resource/textrue/enemy.png");
 	const int ballimag =
 		Novice::LoadTexture("./resource/textrue/ball.png");
-	
+	const int gameclearimag =
+		Novice::LoadTexture("./resource/textrue/gameclear.png");
 	//サウンド
-	/*
+	
 	const int soundHandle[5] = {
 	Novice::LoadAudio("./resource/sound/clear.mp3"),
 	Novice::LoadAudio("./resource/sound/gekiha.mp3"),
@@ -269,7 +270,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	voiceHandle[4] = -1;
 
 	int hannsyaflag = false;
-	*/
+	
 	
 	///マップデータ///
 	//ステージ1
@@ -338,7 +339,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE3,
 		STAGE4,
 		STAGE5,
-		STAGE6,
+		STAGE6, 
 		STAGE7,
 		STAGE8,
 		STAGE9,
@@ -800,6 +801,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			if (gameclearflag) {
+				if (keys[DIK_SPACE]) {
+					screenscene = TITLE;
+				}
+			}
+
+			/*if (gameclearflag) {
 				gamecleary += gameclearspeed;
 				if (gamecleary == 300) {
 					gameclearspeed = 0;
@@ -813,6 +820,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			
 			}
+			*/
 			//もし玉を全て打ち切ってしまったらリトライ
 
 			if (ball.remainingballs < 0) {
@@ -850,7 +858,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		case TITLE:
 			Novice::DrawSprite(0, 0, titleHandle, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 			//サウンド
-			/*
+			
 			Novice::StopAudio(voiceHandle[0]);
 			Novice::StopAudio(voiceHandle[1]);
 			Novice::StopAudio(voiceHandle[2]);
@@ -859,7 +867,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if(Novice::IsPlayingAudio(voiceHandle[4]) == 0 || voiceHandle[4] == -1){
 			voiceHandle[4] = Novice::PlayAudio(soundHandle[0],true,0.01f);
 			}
-			*/
+			
 			break;
 		case TUTORIAL1:
 			Novice::DrawSprite(0, 0, tutorialHandle1, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
@@ -934,6 +942,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (stageclearflag) {
 				Novice::DrawSprite(0, 0, stageclearimag, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 				Novice::DrawSprite(0, 0, pushspaceimag, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+			}
+
+			if (gameclearflag) {
+				Novice::DrawSprite(0, 0, gameclearimag, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 			}
 			//UI・HUDなど//
 			//タイトル

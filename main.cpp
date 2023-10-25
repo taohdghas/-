@@ -232,15 +232,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     
 	const int titleHandle =
 	Novice::LoadTexture("./resource/textrue/title.png");
+	const int tutorialHandle =
+		Novice::LoadTexture("./resource/textrue/tutorial.png");
+	const int stageclearimag =
+		Novice::LoadTexture("./resource/textrue/stageclear.png");
 	const int playerimag =
 		Novice::LoadTexture("./resource/textrue/player.png");
-
 	const int backgroundHandle =
 		Novice::LoadTexture("./resource/textrue/background.png");
 	const int wallimag =
 		Novice::LoadTexture("./resource/textrue/wall.png");
 	const int enemyimag =
 		Novice::LoadTexture("./resource/textrue/enemy.png");
+	const int ballimag =
+		Novice::LoadTexture("./resource/textrue/ball.png");
+	
 	//サウンド
 	/*
 	const int soundHandle[5] = {
@@ -283,7 +289,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Ball ball{
 		{player.pos.x,player.pos.y + 10}, //場所
 		{15,15},                            //速度 仮で0
-		10,                               //大きさ 仮で10
+		15,                               //大きさ 仮で10
 		0xffffffff,                       //色 仮で0
 		20.0f,                            //最高速度
 		false,                            //発射フラグ
@@ -315,6 +321,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// 画面変化
 	enum screen {
 		TITLE,  //タイトル
+		TUTORIAL,
 		//SELECT ステージセレクト(未定)
 		STAGE,   //ステージ
 		CLEAR,   //クリア画面
@@ -552,6 +559,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			gameclearflag = false;
 			//spaceキー長押しで説明画面に移行(未定)
 			if (keys[DIK_SPACE])
+				//spaceキー押されたらステージ画面へ移行
+				if (keys[DIK_SPACE]) {
+					screenscene = TUTORIAL;
+
+				}
+			break;
+		case TUTORIAL:
+			if (keys[DIK_SPACE])
 				//spaceキー押されたらセレクト画面に移行(未定)
 				/*if (keys[DIK_SPACE]) {
 				   screenscene = SELECT;
@@ -617,7 +632,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			//マップチップ(プロト版)
 			//弾が発射できる状態であればプレイヤーを操作できる
-			if (!ball.isShot) {
+			if (!ball.isShot && !stageclearflag) {
 
 				/*玉の発射方向*/
 				//左矢印キーが押されたら左に45度傾く
@@ -751,11 +766,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					break;
 				}
 				if (i == 19) {
+					stageclearflag = true;
+					ball.isShot = false;
+				}
+			}
+
+			if(stageclearflag){
+				if(keys[DIK_SPACE] && !preKeys[DIK_SPACE]){
 					Stagenow++;
 					Stagescene = Stagenow;
 					stageflag = true;
 					//stage10クリア
-					if(Stagescene == 11){
+					if (Stagescene == 11) {
 						gameclearflag = true;
 					}
 				}
@@ -823,6 +845,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			*/
 			break;
+		case TUTORIAL:
+			Novice::DrawSprite(0, 0, tutorialHandle, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
+			break;
 		case STAGE:
 			/*
 			Novice::ScreenPrintf(0, 20, "BMX %d", ballMapX);
@@ -861,8 +886,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 			//玉
 			if (ball.isShot) {
-				Novice::DrawEllipse(int(ball.pos.x), int(ball.pos.y), int(ball.radius),
-					int(ball.radius), 0.0f, RED, kFillModeSolid);
+				PrintQuad((int)ball.pos.x, (int)ball.pos.y, (int)ball.radius, 0, 0, ballimag, 0xffffffff);
 				/*
 				if(keys[DIK_SPACE]){
 				if(Novice::IsPlayingAudio(voiceHandle[]) == 0 || voiceHandle[] == -1){
@@ -888,7 +912,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 
 			//エフェクト等//
-			
+			if (stageclearflag) {
+
+			}
 			//UI・HUDなど//
 			//タイトル
 

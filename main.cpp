@@ -803,6 +803,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (gameclearflag) {
 				if (keys[DIK_SPACE]) {
 					screenscene = TITLE;
+					Stagescene = STAGE1;
 				}
 			}
 
@@ -865,7 +866,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::StopAudio(voiceHandle[3]);
 
 			if(Novice::IsPlayingAudio(voiceHandle[4]) == 0 || voiceHandle[4] == -1){
-			voiceHandle[4] = Novice::PlayAudio(soundHandle[0],true,0.01f);
+			voiceHandle[4] = Novice::PlayAudio(soundHandle[4],true,0.01f);
 			}
 			
 			break;
@@ -885,11 +886,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::ScreenPrintf(0, 120, "PDY %f", player.direction.y);
 			*/
 			//サウンド
-			/*
-			if(Novice::IsPlayingAudio(voiceHandle[4]) == 0 || voiceHandle[4] == -1){
-			voiceHandle[4] = Novice::PlayAudio(soundHandle[4],true,0.01f);
+			if (stageclearflag) {
+				if (Novice::IsPlayingAudio(voiceHandle[0]) == 0 || voiceHandle[0] == -1) {
+					voiceHandle[0] = Novice::PlayAudio(soundHandle[0], true, 0.05f);
+				}
 			}
-			*/
+			if (!stageclearflag) {
+				Novice::StopAudio(voiceHandle[0]);
+			}
 			
 			
 			//マップチップ(プロトタイプ)

@@ -913,7 +913,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//エフェクト等//
 			if (stageclearflag) {
-
+				Novice::DrawSprite(0, 0, stageclearimag, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 			}
 			//UI・HUDなど//
 			//タイトル

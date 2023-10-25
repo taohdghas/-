@@ -97,6 +97,7 @@ struct Enemy {
 	int hp;
 	int count;
 	unsigned int color;
+	int directionpoint;
 };
 //回転する壁 (現段階では実装不可能？
 struct Woll {
@@ -144,12 +145,30 @@ void Hitballenemy(Ball ball, Enemy& enemy, Vector2& direction) {
 		else {
 			if (enemydirection.y == 0 || enemydirection.x == 0) {
 				enemy.direction = { enemydirection.y * -1,enemydirection.x };
+				enemy.directionpoint += 2;
+				if(enemy.directionpoint == 4){
+					enemy.directionpoint = 1;
+				}
+				else if (enemy.directionpoint == 5) {
+					enemy.directionpoint = 0;
+				}
 			}
 			else if(enemydirection.y < 0 && enemydirection.x < 0 || enemydirection.y > 0 && enemydirection.x > 0){
 				enemy.direction.x = enemydirection.x * -1;
+				enemy.directionpoint++;
+				if(enemy.directionpoint == 7){
+					enemy.directionpoint = 4;
+				}
+				if (enemy.directionpoint > 8) {
+					enemy.directionpoint = 4;
+				}
 			}
 			else{
 				enemy.direction.y = enemydirection.y * -1;
+				enemy.directionpoint++;
+				if (enemy.directionpoint > 8) {
+					enemy.directionpoint = 4;
+				}
 			}
 		}
 	}
@@ -206,6 +225,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::LoadTexture("./resource/textrue/title.png");
 	const int playerimag =
 		Novice::LoadTexture("./resource/textrue/player.png");
+
+	const int backgroundHandle =
+		Novice::LoadTexture("./resource/textrue/background.png");
+	const int wallimag =
+		Novice::LoadTexture("./resource/textrue/wall.png");
+	const int enemyimag =
+		Novice::LoadTexture("./resource/textrue/enemy.png");
 	//サウンド
 	/*
 	const int soundHandle[5] = {
@@ -297,7 +323,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE9,
 		STAGE10,
 	};
-	int Stagescene = STAGE;
+	int Stagescene = STAGE8;
 	int Stagenow = STAGE1;
 	int stageflag = true;
 	screen screenscene = TITLE; //表示されるシーン
@@ -419,10 +445,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				enemy[i].count = CTcount(enemy[i].count, 10);
 			}
 			if (enemy[i].hp == 1) {
-				enemy[i].color = 0xff0000ff;
+				enemy[i].color = 0xffffffff;
 			}
 			if (enemy[i].hp == 2) {
-				enemy[i].color = 0x00ff00ff;
+				enemy[i].color = 0x99ff99ff;
 			}
 		}
 	
@@ -455,6 +481,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					player.direction.y = 0;
 					ball.HP--;
 				}
+				else{
+					player.direction.y *= -1;
+					ball.HP--;
+				}
 			}
 		}
 		else if (player.direction.y == 0.0f) {
@@ -477,6 +507,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						player.direction.y *= -1;
 					}
 					player.direction.x = 0;
+					ball.HP--;
+				}
+				else{
+					player.direction.x *= -1;
 					ball.HP--;
 				}
 			}
@@ -536,11 +570,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 						    map[y][x] == enemyRIGHTup || map[y][x] == enemyRIGHTdown || map[y][x] == enemyLEFTup|| map[y][x] == enemyLEFTdown) {
 							for (int i = 0; i < kEnemyMax; i++) {
 								if (!enemy[i].isAlive) {
-									enemy[i].radius = 30;
+									enemy[i].radius = 32;
 									enemy[i].pos = { float(x) * Map_radius + (Map_radius / 2),float(y) * Map_radius + (Map_radius / 2) };
 									enemy[i].isAlive = true;
 									enemy[i].direction = enemydirection[map[y][x] - 4];
 									enemy[i].hp = enemyhp[i];
+									enemy[i].directionpoint = map[y][x] - 4;
 									break;
 								}
 							}
@@ -695,7 +730,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//全ての敵の生存フラグがfalseならステージクリア
 
 			mapenemy = 0;
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < kEnemyMax; i++) {
 				if (enemy[i].isAlive) {
 					break;
 				}
@@ -753,6 +788,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
+		Novice::DrawSprite(0, 0, backgroundHandle, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 		switch (screenscene) {
 		case TITLE:
 			Novice::DrawSprite(0, 0, titleHandle, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
@@ -788,26 +824,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//マップチップ(プロトタイプ)
 			for (int i = 0; i < Map_H; i++) {
 				for (int j = 0; j < Map_W; j++) {
-					if (map[i][j] == kabe) {
-						Novice::DrawBox(j * Map_radius, i * Map_radius, Map_radius, Map_radius, 0.0f, RED, kFillModeWireFrame);
-					}
-					if (map[i][j] == naname) {
-						Novice::DrawBox(j * Map_radius, i * Map_radius, Map_radius, Map_radius, 0.0f, BLUE, kFillModeWireFrame);
+					if (map[i][j] == kabe || map[i][j] == naname || map[i][j] == kaiten) {
+						PrintMap(j, i, Map_radius, 0, 0, wallimag, 0xffffffff);
 					}
 				}
 			}
 			/*
 			for(int y = 0;y < Map_H;y++){
 			for(int x = 0;x < Map_W;x++){
-			PrintMap(x,y,Map_rad,Map[y][x],0,mapimag,0xffffffff);
+			PrintMap(j,i,Map_rad,Map[y][x],0,mapimag,0xffffffff);
 			}
 			}
 			*/
 			//プレイヤー　プロトタイプにつき円で。
 			if (player.isAlive) {
-				PrintQuad((int)player.pos.x, (int)player.pos.y, player.radius, directionpoint, 0, playerimag, 0xffffffff);
-				/*Novice::DrawEllipse(int(player.pos.x), int(player.pos.y), int(player.radius),
-					int(player.radius), 0.0f, WHITE, kFillModeSolid);*/
+				PrintQuad((int)player.pos.x, (int)player.pos.y, (int)player.radius, directionpoint, 0, playerimag, 0xffffffff);
 			}
 			//玉
 			if (ball.isShot) {
@@ -832,8 +863,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			///敵///
 			for (int i = 0; i < kEnemyMax; i++) {
 				if (enemy[i].isAlive) {
-					Novice::DrawEllipse(int(enemy[i].pos.x), int(enemy[i].pos.y), int(enemy[i].radius),
-						int(enemy[i].radius), 0.0f, enemy[i].color, kFillModeSolid);
+					PrintQuad((int)enemy[i].pos.x, (int)enemy[i].pos.y, (int)enemy[i].radius, enemy[i].directionpoint, 0, enemyimag, enemy[i].color);
 				}
 			}
 			

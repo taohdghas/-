@@ -25,6 +25,15 @@ void PrintMap(int a, int b, int c, int d, int e, int f, unsigned int g) { //Posx
 		d * c, e * c, c, c,
 		f, g);
 }
+void PrintQuad(int a, int b, int c, int d, int e, int f, unsigned int g) { //Posx,Posy,Radius,TileNumberW,TileNumberH,gazo,color
+	Novice::DrawQuad(
+		a - c, b - c,
+		a + c, b - c,
+		a - c, b + c,
+		a + c, b + c,
+		d * (c * 2), e * (c * 2), c * 2, c * 2,
+		f, g);
+}
 int CTcount(int ct, int time) {
 	if (ct + 1 > time) {
 		return 0;
@@ -192,6 +201,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	blockHandle[1] = Novice::LoadTexture("./block2.png");
 	……
 	*/
+    
+	const int titleHandle =
+	Novice::LoadTexture("./resource/textrue/title.png");
+	const int playerimag =
+		Novice::LoadTexture("./resource/textrue/player.png");
 	//サウンド
 	/*
 	const int soundHandle[5] = {
@@ -286,7 +300,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int Stagescene = STAGE;
 	int Stagenow = STAGE1;
 	int stageflag = true;
-	screen screenscene = STAGE; //表示されるシーン
+	screen screenscene = TITLE; //表示されるシーン
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -342,10 +356,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Stagescene = 0;
 			break;
 		case STAGE5:
-			fp = fopen("map/st6.txt", "r");
+			fp = fopen("map/st5.txt", "r");
 			for (int i = 0; i < Map_H; i++)for (int j = 0; j < Map_W; j++)fscanf(fp, "%d", &map[i][j]);
 			fclose(fp);
-			fpEnemy = fopen("map/st6_EnemyHp.txt", "r");
+			fpEnemy = fopen("map/st5_EnemyHp.txt", "r");
 			for (int i = 0; i < kEnemyMax; i++)fscanf(fpEnemy, "%d", &enemyhp[i]);
 			fclose(fpEnemy);
 			Stagescene = 0;
@@ -741,6 +755,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		switch (screenscene) {
 		case TITLE:
+			Novice::DrawSprite(0, 0, titleHandle, 1.0f, 1.0f, 0.0f, 0xFFFFFFFF);
 			//サウンド
 			/*
 			Novice::StopAudio(voiceHandle[0]);
@@ -784,14 +799,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			/*
 			for(int y = 0;y < Map_H;y++){
 			for(int x = 0;x < Map_W;x++){
-			PrintMap(x,y,Map_rad,Map[y][x],0,mapgazo,color);
+			PrintMap(x,y,Map_rad,Map[y][x],0,mapimag,0xffffffff);
 			}
 			}
 			*/
 			//プレイヤー　プロトタイプにつき円で。
 			if (player.isAlive) {
-				Novice::DrawEllipse(int(player.pos.x), int(player.pos.y), int(player.radius),
-					int(player.radius), 0.0f, WHITE, kFillModeSolid);
+				PrintQuad((int)player.pos.x, (int)player.pos.y, player.radius, directionpoint, 0, playerimag, 0xffffffff);
+				/*Novice::DrawEllipse(int(player.pos.x), int(player.pos.y), int(player.radius),
+					int(player.radius), 0.0f, WHITE, kFillModeSolid);*/
 			}
 			//玉
 			if (ball.isShot) {

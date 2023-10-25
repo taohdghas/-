@@ -157,17 +157,26 @@ void Hitballenemy(Ball ball, Enemy& enemy, Vector2& direction) {
 				enemy.direction.x = enemydirection.x * -1;
 				enemy.directionpoint++;
 				if(enemy.directionpoint == 7){
+					enemy.directionpoint = 8;
+				}
+				else if (enemy.directionpoint == 8) {
 					enemy.directionpoint = 4;
 				}
-				if (enemy.directionpoint > 8) {
-					enemy.directionpoint = 4;
+				if(enemy.directionpoint == 9){
+					enemy.directionpoint = 7;
 				}
 			}
 			else{
 				enemy.direction.y = enemydirection.y * -1;
 				enemy.directionpoint++;
-				if (enemy.directionpoint > 8) {
+				if (enemy.directionpoint == 7) {
+					enemy.directionpoint = 8;
+				}
+				else if (enemy.directionpoint == 8) {
 					enemy.directionpoint = 4;
+				}
+				if (enemy.directionpoint == 9) {
+					enemy.directionpoint = 7;
 				}
 			}
 		}
@@ -323,10 +332,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		STAGE9,
 		STAGE10,
 	};
-	int Stagescene = STAGE8;
+	int Stagescene = STAGE;
 	int Stagenow = STAGE1;
 	int stageflag = true;
+	int stageclearflag = false;
 	screen screenscene = TITLE; //表示されるシーン
+
+	int gameclearflag = false;
+	int gameclearx = -350;
+	int gamecleary = -500;
+	int gameclearspeed = 10;
 	// キー入力結果を受け取る箱
 	char keys[256] = { 0 };
 	char preKeys[256] = { 0 };
@@ -534,6 +549,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		switch (screenscene) {
 		case TITLE:
+			gameclearflag = false;
 			//spaceキー長押しで説明画面に移行(未定)
 			if (keys[DIK_SPACE])
 				//spaceキー押されたらセレクト画面に移行(未定)
@@ -738,25 +754,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					Stagenow++;
 					Stagescene = Stagenow;
 					stageflag = true;
+					//stage10クリア
+					if(Stagescene == 11){
+						gameclearflag = true;
+					}
 				}
 			}
 
-			/*if (stageclear1.flag) {
-			ステージクリアの文字を表示させる
-			何かしらの演出を入れる
+			if (gameclearflag) {
+				gamecleary += gameclearspeed;
+				if (gamecleary == 300) {
+					gameclearspeed = 0;
+				}
 			}
 
-			*/
-			/*if(ステージクリアの文字が出た){
-			//次のステージへ
-			if(keys[DIK_SPACE] && keys[DIK_SPACE] == 0){
-			Stagescene = Stagescene += 1;
-			}
-			//長押しでタイトルへ戻る(未定)
+			
+			if(gamecleary == 300){
 			if(keys[DIK_SPACE]){
-			screeenscene = TITLE;
+			Stagescene = TITLE;
 			}
-			}*/
+			
+			}
 			//もし玉を全て打ち切ってしまったらリトライ
 
 			if (ball.remainingballs < 0) {
@@ -777,6 +795,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
+			
 			break;
 		case CLEAR:
 			break;
@@ -869,7 +888,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			
 
 			//エフェクト等//
-
+			
 			//UI・HUDなど//
 			//タイトル
 
@@ -905,6 +924,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case CLEAR:
+
 			break;
 		}
 		///
